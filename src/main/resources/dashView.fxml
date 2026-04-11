@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane prefHeight="700.0" prefWidth="1024.0"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.files.projBistro.controllers.DashController">
+
+    <left>
+        <VBox spacing="20" prefWidth="250" style="-fx-background-color: #1a1a1a; -fx-padding: 20;">
+            <Label text="ADMIN PANEL" style="-fx-text-fill: #00ff00; -fx-font-weight: bold; -fx-font-size: 18;" />
+
+            <HBox spacing="10" alignment="CENTER_LEFT" onMouseClicked="#showMenuManagement" style="-fx-cursor: hand;">
+                <ImageView fitHeight="30" fitWidth="30">
+                    <Image url="@dashMedia/placeholder.png" />
+                </ImageView>
+                <Label text="Inventory / Menu" style="-fx-text-fill: white;" />
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT" onMouseClicked="#showOrders" style="-fx-cursor: hand;">
+                <ImageView fitHeight="30" fitWidth="30">
+                    <Image url="@dashMedia/placeholder.png" />
+                </ImageView>
+                <Label text="Active Orders" style="-fx-text-fill: white;" />
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT" onMouseClicked="#showStockAlerts" style="-fx-cursor: hand;">
+                <ImageView fitHeight="30" fitWidth="30">
+                    <Image url="@dashMedia/placeholder.png" />
+                </ImageView>
+                <Label text="Low Stock (Ammo)" style="-fx-text-fill: white;" />
+            </HBox>
+
+            <Region VBox.vgrow="ALWAYS" />
+
+            <Button text="LOGOUT" onAction="#handleLogout" prefWidth="200" style="-fx-background-color: #444; -fx-text-fill: white;" />
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea" style="-fx-background-color: #2b2b2b;">
+            <VBox alignment="CENTER" spacing="20">
+                <Label text="Welcome back, Commander." style="-fx-text-fill: gray; -fx-font-size: 24;" />
+                <Label fx:id="statusLabel" text="Select a mission from the left sidebar." style="-fx-text-fill: #666;" />
+            </VBox>
+        </StackPane>
+    </center>
+
+</BorderPane>

@@ -1,13 +1,22 @@
 package com.files.projBistro.models.userModel;
 
 public class User {
-    // for a User object, have expected
-    // fields
+    private int id; // Added to match database user_id
     private String username;
     private String password;
-    private Role role; // check ENUM file
+    private Role role;
 
-    // constructor
+    // --- NEW CONSTRUCTOR FOR THE DAO ---
+    // This allows the database to create a User object using Strings
+    public User(int id, String username, String roleName) {
+        this.id = id;
+        this.username = username;
+        // This converts the String "Admin" or "Customer" from SQL
+        // into your actual Role Enum (Role.ADMIN or Role.CUSTOMER)
+        this.role = Role.valueOf(roleName.toUpperCase());
+    }
+
+    // --- YOUR ORIGINAL CONSTRUCTOR ---
     public User(String username, String password, Role role) {
         this.username = username;
         this.password = password;
@@ -17,17 +26,10 @@ public class User {
     // getters
     public String getUsername() { return username; }
     public Role getRole() { return role; }
+    public int getId() { return id; }
 
-    // 2a. role checker
+    // role checker
     public boolean isAdmin(){
-        /*
-         check operating object's role
-         ""does this object's role (str. value) == Role's "ADMIN" str.?""
-         return true if equal
-        */
         return this.role == Role.ADMIN;
     }
-
-
-
 }

@@ -1,21 +1,21 @@
 package com.files.projBistro.models;
 
 public class FoodItem {
-    // within a FoodItem Object, they should have
-    // some expected fields
+    // 1. expected fields for every food unit
     private int id;
     private String name;
     private double price;
     private int stock;
     private String itemType;
 
-    // used to identify who's menu
+    // used to identify who's menu (e.g., Chloe, Mimi)
     private String charCategory;
 
-    // store string Path
+    // store the string path for the menu image
     private String imagePath;
 
-    // 1a. constructor
+    // 1a. private constructor
+    // only accessible via the Builder
     private FoodItem(FoodItemBuilder builder) {
         this.id = builder.id;
         this.name = builder.name;
@@ -26,6 +26,13 @@ public class FoodItem {
         this.imagePath = builder.imagePath;
     }
 
+    // 1b. display method (CRITICAL)
+    // moved here so ListView shows name/price instead of gibberish
+    @Override
+    public String toString() {
+        return String.format("%s - £%.2f", this.name, this.price);
+    }
+
     // 1c. getters ---------
     public int getId() { return id; }
     public String getName() { return name; }
@@ -33,11 +40,11 @@ public class FoodItem {
     public int getStock() { return stock; }
     public String getItemType() { return itemType; }
     public String getCharCategory() { return charCategory; }
-    // Added this getter so the UI can find your images:
     public String getImagePath() { return imagePath; }
     // -----------------------
 
-    // 1b. helper builder method
+    // 1d. static builder class
+    // allows for flexible item creation
     public static class FoodItemBuilder {
         private int id;
         private String name;
@@ -78,11 +85,11 @@ public class FoodItem {
         }
 
         public FoodItemBuilder setImagePath(String imagePath) {
-            // FIXED: Changed this.name to this.imagePath
             this.imagePath = imagePath;
             return this;
         }
 
+        // build the final FoodItem object
         public FoodItem build() {
             return new FoodItem(this);
         }

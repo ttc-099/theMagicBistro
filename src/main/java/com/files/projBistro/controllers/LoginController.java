@@ -1,4 +1,7 @@
 package com.files.projBistro.controllers;
+
+import com.files.projBistro.models.dao.LoginDAO;
+import com.files.projBistro.models.userModel.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -7,33 +10,42 @@ import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.event.ActionEvent;
 import java.io.IOException;
-import javax.swing.*;
 
 public class LoginController {
 
-    // call FXML -- were from loginView
+    // call FXML (ref: loginView.fxml)
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private Label errorLabel;
 
-    @FXML // using that fxml...
+    @FXML
     public void handleLogin(ActionEvent event) {
-        // extract string vals from input field
-        String user = usernameField.getText();
-        String pass = passwordField.getText();
+        String inputUser = usernameField.getText();
+        String inputPass = passwordField.getText();
 
-        //admin check (hard coded sample)
-        if (user.equals("admin") && pass.equals("1234")) {
+        LoginDAO dao = new LoginDAO();
+        // Renamed the object to loggedInUser to avoid the name clash
+        User loggedInUser = dao.verifyLogin(inputUser, inputPass);
+
+        if (loggedInUser != null) {
             try {
-                switchToMenu(event);
+                // Check the role and deploy the correct scene
+                if (loggedInUser.isAdmin()) {
+                    System.out.println("Tactical Auth: Admin Access Granted.");
+                    switchToDash(event);
+                } else {
+                    System.out.println("Tactical Auth: Customer Access Granted.");
+                    switchToMenu(event);
+                }
             } catch (IOException e) {
-                errorLabel.setText("Error: Could not load the menu screen.");
+                errorLabel.setText("System Error: View not found.");
                 e.printStackTrace();
             }
         } else {
-            errorLabel.setText("Invalid credentials. Try again!");
+            // This is what you're seeing now because the DAO might be returning null
+            errorLabel.setText("Invalid credentials");
         }
-    } // method end
+    }
 
     private void switchToMenu(ActionEvent event) throws IOException {
         // load the fxml
@@ -43,17 +55,25 @@ public class LoginController {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
         // create new scene
-        Scene scene = new Scene(loader.load(), 900, 600);
+        Scene scene = new Scene(loader.load(), 1024, 700);
         stage.setScene(scene);
         stage.setTitle("Camo-Gear Bistro | Menu");
         stage.show();
     }
 
+    private void switchToDash(ActionEvent event) throws IOException {
+        // load the fxml
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashView.fxml"));
 
+        // get stage after button click event
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-
-
-
-
+        // create new scene
+        Scene scene = new Scene(loader.load(), 1024, 700);
+        stage.setScene(scene);
+        stage.setTitle("Camo-Gear Bistro | Admin Dashboard");
+        stage.show();
+    }
 
 }
+

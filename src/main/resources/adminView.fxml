@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="10" prefHeight="700.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml" fx:controller="com.files.projBistro.controllers.AdminController"
+      style="-fx-padding: 15; -fx-background-color: #1a1a1a;">
+
+    <Label text="TACTICAL ADMIN COMMAND" style="-fx-text-fill: #00ff00; -fx-font-size: 22; -fx-font-weight: bold; -fx-font-family: 'Consolas';" />
+
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" style="-fx-background-color: #2b2b2b;">
+        <tabs>
+            <Tab text="INVENTORY LOGS">
+                <VBox spacing="15" style="-fx-padding: 15;">
+                    <TableView fx:id="inventoryTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colId" text="ID" prefWidth="50" />
+                            <TableColumn fx:id="colName" text="Item Name" prefWidth="180" />
+                            <TableColumn fx:id="colPrice" text="Price (£)" prefWidth="80" />
+                            <TableColumn fx:id="colStock" text="Stock" prefWidth="80" />
+                            <TableColumn fx:id="colCategory" text="Character" prefWidth="120" />
+                        </columns>
+                    </TableView>
+
+                    <Separator />
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="nameInput" promptText="Item Name" prefWidth="140" />
+                        <TextField fx:id="priceInput" promptText="Price" prefWidth="60" />
+                        <TextField fx:id="stockInput" promptText="Stock" prefWidth="60" />
+                        <ComboBox fx:id="categoryBox" promptText="Owner" prefWidth="100" />
+
+                        <Button text="+ Add" onAction="#handleAddItem" style="-fx-background-color: #2ecc71; -fx-text-fill: white;" />
+                        <Button text="✎ Edit" onAction="#handleEditItem" style="-fx-background-color: #3498db; -fx-text-fill: white;" />
+
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button text="🗑 Remove" onAction="#handleRemoveItem" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" />
+                    </HBox>
+                </VBox>
+            </Tab>
+
+            <Tab text="CHARACTER COMMS">
+                <VBox spacing="15" style="-fx-padding: 15;">
+                    <HBox spacing="15">
+                        <VBox spacing="5">
+                            <Label text="Select Unit:" style="-fx-text-fill: white;" />
+                            <ComboBox fx:id="dialogueCharBox" prefWidth="150" promptText="Select Character" onAction="#loadDialogueTable" />
+                        </VBox>
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="Active Dialogue Lines:" style="-fx-text-fill: white;" />
+                            <TableView fx:id="dialogueTable" prefHeight="300">
+                                <columns>
+                                    <TableColumn fx:id="colTrigger" text="Trigger" prefWidth="120" />
+                                    <TableColumn fx:id="colText" text="Dialogue Content" prefWidth="400" />
+                                </columns>
+                            </TableView>
+                        </VBox>
+                    </HBox>
+
+                    <Separator />
+
+                    <GridPane hgap="10" vgap="10">
+                        <Label text="Trigger Type:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-text-fill: white;" />
+                        <ComboBox fx:id="triggerInputBox" promptText="e.g. ITEM_SELECTED" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                        <Label text="Dialogue Text:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-text-fill: white;" />
+                        <TextArea fx:id="dialogueInputArea" prefHeight="80" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                        <Button text="Save Dialogue" onAction="#handleAddDialogue" prefWidth="120"
+                                style="-fx-background-color: #f1c40f; -fx-text-fill: black; -fx-font-weight: bold;"
+                                GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    </GridPane>
+                </VBox>
+            </Tab>
+        </tabs>
+    </TabPane>
+
+    <Button text="Back to Menu" onAction="#handleBack" style="-fx-background-color: transparent; -fx-text-fill: grey; -fx-border-color: grey;" />
+</VBox>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox fx:id="settingsRoot" spacing="20" alignment="CENTER" prefHeight="300.0" prefWidth="400.0"
+      xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.files.projBistro.controllers.SettingsController"
+      style="-fx-padding: 30;">
+
+    <Label text="SYSTEM SETTINGS" style="-fx-font-size: 20; -fx-font-weight: bold;" />
+
+    <HBox spacing="15" alignment="CENTER">
+        <Label text="Display Theme:" />
+        <ToggleButton fx:id="themeToggle" text="Light Mode" onAction="#handleThemeChange" prefWidth="120"/>
+    </HBox>
+
+    <Region VBox.vgrow="ALWAYS" />
+
+    <Button text="Back to Menu" onAction="#handleBack" prefWidth="100" />
+</VBox>

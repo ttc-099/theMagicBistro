@@ -1,28 +1,37 @@
 package com.files.projBistro;
 
+import com.files.projBistro.database.populateDB;
+import com.files.projBistro.database.setUpDB;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+import java.util.Objects;
 
+// done, do not edit further plz :)
+
+public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        // 1. Initialise Database FIRST (The Engine)
+        // load login UI
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/loginView.fxml"));
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/main_icon.png"))));
 
-        // 2. Load the UI (The Dashboard)
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/menuView.fxml"));
-
-        // 3. Set the dimensions
-        Scene scene = new Scene(loader.load(), 600, 400);
-
-        stage.setTitle("Bistro Menu");
+        // set scene (400 x 500px)
+        Scene scene = new Scene(loader.load(), 400, 500);
+        stage.setTitle("Camo-Gear Bistro - Login");
         stage.setScene(scene);
         stage.show();
     }
 
     public static void main(String[] args) {
+        // 1. initialize the setup worker
+        setUpDB bootloader = new setUpDB();
+        // 2. build the tables (if they don't exist)
+        bootloader.initializeDatabase();
+
         launch(args);
     }
 }

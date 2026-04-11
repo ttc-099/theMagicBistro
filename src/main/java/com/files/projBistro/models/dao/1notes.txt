@@ -1,0 +1,8 @@
+just for quick clarification
+
+AdminDAO - anything under the Admin interface that
+           requires access to the SQLite database
+
+
+UserDAO - anything under the User interface that
+           requires access to the SQLite database

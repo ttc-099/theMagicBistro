@@ -1,0 +1,61 @@
+/* The main background */
+.root {
+    -fx-background-color: #1a1a1a;
+}
+
+/* Make the TabPane header and content area dark */
+.tab-pane .tab-header-background {
+    -fx-background-color: #2b2b2b;
+}
+
+.tab-pane .tab-content-area {
+    -fx-background-color: #1a1a1a;
+}
+
+/* Target the actual area where the Nachos are sitting */
+.tile-pane, .scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent; /* ScrollPane specifically needs this */
+}
+
+/* Make the Cart list background dark too */
+.list-view {
+    -fx-background-color: #333;
+}
+
+/* Change the text color for everything */
+.label, .tab .tab-label {
+    -fx-text-fill: #00ff00; /* Tactical Green */
+}
+
+/* The actual Tab buttons (Chloe, Mimi, etc.) */
+.tab {
+    -fx-background-color: #333333;
+    -fx-border-color: #444444;
+}
+
+/* The selected tab (the one you are currently viewing) */
+.tab:selected {
+    -fx-background-color: #00ff00; /* Green highlight for active mission */
+}
+
+.tab:selected .tab-label {
+    -fx-text-fill: #000000; /* Black text on green background for readability */
+}
+
+/* The non-selected tab labels */
+.tab-label {
+    -fx-text-fill: #00ff00;
+}
+
+/* The Nitro Nachos buttons in the grid */
+.button {
+    -fx-background-color: #444444;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #666666;
+}
+
+/* Hover effect for buttons - functional feedback! */
+.button:hover {
+    -fx-background-color: #555555;
+}
