@@ -8,6 +8,7 @@ import com.files.projBistro.models.dao.MenuDAO;
 import com.files.projBistro.models.dao.DialogueDAO;
 import com.files.projBistro.models.dao.OrderDAO;
 import com.files.projBistro.models.userModel.User;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -88,6 +89,10 @@ public class MenuController {
         createCharacterTabs();
         updateWelcomeMessage();
         updateAuthButtonState();
+
+        Platform.runLater(() -> {
+            ThemeManager.applyToScene(welcomeLabel.getScene(), getClass());
+        });
     }
 
     public void refreshMenu() {
@@ -589,10 +594,9 @@ public class MenuController {
         Scene scene = new Scene(loader.load(), 450, 350);
         SettingsController settingsController = loader.getController();
         settingsController.setLoggedInUser(loggedInUser);
-        String themePath = ThemeManager.getTheme();
-        if (themePath != null) {
-            scene.getStylesheets().add(getClass().getResource(themePath).toExternalForm());
-        }
+
+        ThemeManager.applyToScene(scene, getClass());
+
         stage.setScene(scene);
         stage.setTitle("Camogear Bistro (Settings)");
         stage.show();

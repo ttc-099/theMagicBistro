@@ -135,7 +135,6 @@ public class DashController {
 
     @FXML
     private void showMenuManagement() {
-        // removed pin check here - now only checked in AdminController when that view loads
         System.out.println("Loading adminView.fxml...");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminView.fxml"));

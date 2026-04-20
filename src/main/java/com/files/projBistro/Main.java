@@ -20,7 +20,9 @@ public class Main extends Application {
 
         // set scene (400 x 500px)
         Scene scene = new Scene(loader.load(), 400, 500);
-        stage.setTitle("Camo-Gear Bistro - Login");
+        scene.getStylesheets().add(getClass().getResource("/styles/light.css").toExternalForm());
+
+        stage.setTitle("Camogear Bistro (Login)");
         stage.setScene(scene);
         stage.show();
     }

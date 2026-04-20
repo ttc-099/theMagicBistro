@@ -67,18 +67,16 @@ public class ActiveOrdersController {
                 HBox phoneBox = new HBox(10);
                 phoneBox.setAlignment(Pos.CENTER_LEFT);
 
-                Label phoneIcon = new Label("📞");
-                phoneIcon.setStyle("-fx-font-size: 12px;");
 
                 String phoneNumber = order.getCustomerPhone();
                 if (phoneNumber == null || phoneNumber.isEmpty()) {
                     phoneNumber = "No phone number!";
                 }
 
-                Label phoneLabel = new Label("Phone: " + phoneNumber);
+                Label phoneLabel = new Label(" \uD83D\uDCDE Phone: " + phoneNumber);
                 phoneLabel.setStyle("-fx-text-fill: #666; -fx-font-size: 12px;");
 
-                phoneBox.getChildren().addAll(phoneIcon, phoneLabel);
+                phoneBox.getChildren().addAll(phoneLabel);
 
                 // total and date
                 HBox metaBox = new HBox(20);

@@ -149,6 +149,7 @@ public class AdminController {
         previewController.refreshPreview();
 
         chooseImageBtn.setOnAction(e -> inventoryController.handleChooseImage());
+
     }
 
     private boolean checkAuthorizationOnEntry() {

@@ -48,21 +48,13 @@ public class SettingsController {
         ThemeManager.setTheme(newTheme);
         applyThemeToCurrentScene();
 
-        // If you implement per-user storage, save here
+
     }
 
     private void applyThemeToCurrentScene() {
         Scene currentScene = settingsRoot.getScene();
         if (currentScene != null) {
-            String theme = ThemeManager.getTheme();
-            if (theme != null) {
-                currentScene.getStylesheets().clear();
-                try {
-                    currentScene.getStylesheets().add(getClass().getResource(theme).toExternalForm());
-                } catch (Exception e) {
-                    System.err.println("Could not load theme: " + theme);
-                }
-            }
+            ThemeManager.applyToScene(currentScene, getClass());
         }
     }
 

@@ -1,5 +1,6 @@
 package com.files.projBistro.controllers;
 
+import com.files.projBistro.models.ThemeManager;
 import com.files.projBistro.models.dao.LoginDAO;
 import com.files.projBistro.models.userModel.User;
 import javafx.fxml.FXML;
@@ -58,7 +59,7 @@ public class LoginController {
                 e.printStackTrace();
             }
         } else {
-            errorLabel.setText("Invalid username or password. Maybe you spelt something wrong?");
+            errorLabel.setText("Invalid username or password.");
             errorLabel.setStyle("-fx-text-fill: #e74c3c;");
             usernameField.clear();
             passwordField.clear();
@@ -70,6 +71,8 @@ public class LoginController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/menuView.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(loader.load(), 1024, 700);
+
+        ThemeManager.applyToScene(scene, getClass());
 
         MenuController menuController = loader.getController();
         menuController.setLoggedInUser(user);

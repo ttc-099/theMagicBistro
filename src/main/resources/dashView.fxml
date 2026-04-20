@@ -21,7 +21,7 @@
                 <Insets top="25" right="15" bottom="25" left="15" />
             </padding>
 
-            <Label text="🎮 ADMIN DASHBOARD" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+            <Label text="ADMIN DASHBOARD" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
 
             <Separator />
 
@@ -67,8 +67,8 @@
         <VBox fx:id="contentArea" VBox.vgrow="ALWAYS"
               style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8;">
             <VBox alignment="CENTER" spacing="15" VBox.vgrow="ALWAYS">
-                <Label text="👋 Welcome back, Commander." style="-fx-font-size: 24px; -fx-text-fill: #2c3e50;" />
-                <Label fx:id="statusLabel" text="Select a mission from the left sidebar."
+                <Label text="Welcome back!" style="-fx-font-size: 24px; -fx-text-fill: #2c3e50;" />
+                <Label fx:id="statusLabel" text="Select something from the left sidebar to get started."
                        style="-fx-text-fill: #7f8c8d; -fx-font-size: 14px;" />
             </VBox>
         </VBox>

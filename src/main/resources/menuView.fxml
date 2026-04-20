@@ -64,13 +64,13 @@
                 <padding>
                     <Insets top="10" right="10" bottom="10" left="10" />
                 </padding>
-                <ImageView fx:id="characterImageView" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@icons/ic_Chloe/icon_chloe.jpeg" />
-                    </image>
+                <ImageView fx:id="characterImageView" fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@icons/ic_Chloe/icon_chloe.jpeg" />
                 </ImageView>
-                <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label fx:id="dialogueLabel" text="Please select an item to start." wrapText="true"/>
+                <VBox spacing="5" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: #e8f4f8; -fx-background-radius: 20; -fx-padding: 12 15 12 15;">
+                    <Label fx:id="dialogueLabel" text="Please select an item to start." wrapText="true"
+                           style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;"/>
                 </VBox>
             </HBox>
 
