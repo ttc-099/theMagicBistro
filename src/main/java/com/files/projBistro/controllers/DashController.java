@@ -1,46 +1,130 @@
 package com.files.projBistro.controllers;
 
+import com.files.projBistro.controllers.admin.AdminController;
+import com.files.projBistro.models.userModel.User;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.layout.StackPane;
 import javafx.scene.control.Label;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.Node;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 
 import java.io.IOException;
-import java.util.Optional;
 
 public class DashController {
 
     @FXML
-    private StackPane contentArea;
+    private VBox contentArea;  // changed from StackPane to VBox
     @FXML
     private Label statusLabel;
 
-    @FXML
-    public void initialize() {
-        // initial setup for the admin dashboard
-        System.out.println("Admin Dashboard initialized...");
+    // menu item containers and labels
+    @FXML private HBox inventoryMenuItem;
+    @FXML private HBox ordersMenuItem;
+    @FXML private HBox stockMenuItem;
+
+    @FXML private Label inventoryLabel;
+    @FXML private Label ordersLabel;
+    @FXML private Label stockLabel;
+
+    private User loggedInUser;
+
+    public void setLoggedInUser(User user) {
+        this.loggedInUser = user;
+        if (user != null) {
+            statusLabel.setText("Welcome, Admin " + user.getUsername() + "!");
+        }
     }
 
+    @FXML
+    public void initialize() {
+        System.out.println("Admin Dashboard initialized...");
+
+        // setup hover effects after the UI is loaded
+        Platform.runLater(() -> setupHoverEffects());
+    }
+
+    private void setupHoverEffects() {
+        // inventory menu hover
+        if (inventoryMenuItem != null && inventoryLabel != null) {
+            inventoryMenuItem.setOnMouseEntered(e -> {
+                inventoryMenuItem.setStyle("-fx-background-color: #3498db; -fx-padding: 10 15 10 15; -fx-background-radius: 8;");
+                inventoryLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;");
+            });
+            inventoryMenuItem.setOnMouseExited(e -> {
+                inventoryMenuItem.setStyle("-fx-background-color: transparent; -fx-padding: 10 15 10 15; -fx-background-radius: 8;");
+                inventoryLabel.setStyle("-fx-text-fill: #2c3e50; -fx-font-size: 14px;");
+            });
+        }
+
+        // orders menu hover
+        if (ordersMenuItem != null && ordersLabel != null) {
+            ordersMenuItem.setOnMouseEntered(e -> {
+                ordersMenuItem.setStyle("-fx-background-color: #3498db; -fx-padding: 10 15 10 15; -fx-background-radius: 8;");
+                ordersLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;");
+            });
+            ordersMenuItem.setOnMouseExited(e -> {
+                ordersMenuItem.setStyle("-fx-background-color: transparent; -fx-padding: 10 15 10 15; -fx-background-radius: 8;");
+                ordersLabel.setStyle("-fx-text-fill: #2c3e50; -fx-font-size: 14px;");
+            });
+        }
+
+        // stock alerts menu hover
+        if (stockMenuItem != null && stockLabel != null) {
+            stockMenuItem.setOnMouseEntered(e -> {
+                stockMenuItem.setStyle("-fx-background-color: #3498db; -fx-padding: 10 15 10 15; -fx-background-radius: 8;");
+                stockLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;");
+            });
+            stockMenuItem.setOnMouseExited(e -> {
+                stockMenuItem.setStyle("-fx-background-color: transparent; -fx-padding: 10 15 10 15; -fx-background-radius: 8;");
+                stockLabel.setStyle("-fx-text-fill: #2c3e50; -fx-font-size: 14px;");
+            });
+        }
+    }
 
     @FXML
     private void showOrders() {
         statusLabel.setText("Viewing Live Order Feed...");
-        // later: load liveOrdersView.fxml into contentArea
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/activeOrdersView.fxml"));
+            Node node = loader.load();
+            contentArea.getChildren().setAll(node);
+            // make the loaded view expand to fill the VBox
+            if (node instanceof Region) {
+                VBox.setVgrow((Region) node, Priority.ALWAYS);
+            }
+            statusLabel.setText("Active Orders");
+        } catch (IOException e) {
+            statusLabel.setText("Error: Could not load orders view");
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void showStockAlerts() {
         statusLabel.setText("Checking Stock Levels...");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lowStockView.fxml"));
+            Node node = loader.load();
+            contentArea.getChildren().setAll(node);
+            if (node instanceof Region) {
+                VBox.setVgrow((Region) node, Priority.ALWAYS);
+            }
+            statusLabel.setText("Low Stock Alerts");
+        } catch (IOException e) {
+            statusLabel.setText("Error: Could not load stock alerts view");
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void handleLogout(ActionEvent event) throws IOException {
-        // return to login screen
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/loginView.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(loader.load(), 400, 500);
@@ -49,34 +133,24 @@ public class DashController {
         stage.show();
     }
 
-    private boolean checkAdminClearance() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Security Clearance");
-        dialog.setHeaderText("Action Restricted: Admin PIN Required");
-        dialog.setContentText("Enter 4-digit PIN:");
-
-        Optional<String> result = dialog.showAndWait();
-        return result.isPresent() && result.get().equals("1234"); // Your secret PIN
-    }
-
     @FXML
     private void showMenuManagement() {
-        // Tactical Security: Only proceed if PIN is correct
-        if (!checkAdminClearance()) {
-            statusLabel.setText("Access Denied: Incorrect PIN.");
-            return;
-        }
-        System.out.println("Searching for FXML at: " + getClass().getResource("/menuEditView.fxml"));
+        // removed pin check here - now only checked in AdminController when that view loads
+        System.out.println("Loading adminView.fxml...");
         try {
-            // 1. Create the loader
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("menuEditView.fxml"));
-            // 2. Actually LOAD the file into a Node (the visual part)
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminView.fxml"));
             Node node = loader.load();
-            // 3. Inject it into the center of your dashboard
+
+            AdminController adminController = loader.getController();
+            adminController.setLoggedInUser(loggedInUser);
+
             contentArea.getChildren().setAll(node);
-            statusLabel.setText("Inventory System Online. Welcome, Admin.");
+            if (node instanceof Region) {
+                VBox.setVgrow((Region) node, Priority.ALWAYS);
+            }
+            statusLabel.setText("Camogear Bistro (Admin Dashboard)");
         } catch (IOException e) {
-            statusLabel.setText("Tactical Error: Could not find menuEditView.fxml");
+            statusLabel.setText("Error: Could not load admin panel");
             e.printStackTrace();
         }
     }

@@ -2,11 +2,11 @@ package com.files.projBistro.controllers;
 
 import com.files.projBistro.models.ThemeManager;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.event.ActionEvent;
 import java.io.IOException;
@@ -16,35 +16,84 @@ public class SettingsController {
     @FXML private VBox settingsRoot;
     @FXML private ToggleButton themeToggle;
 
-    private void applyTheme(Scene scene) {
-        scene.getStylesheets().clear();
-        scene.getStylesheets().add(getClass().getResource(ThemeManager.getTheme()).toExternalForm());
+    private com.files.projBistro.models.userModel.User loggedInUser;
+
+    public void setLoggedInUser(com.files.projBistro.models.userModel.User user) {
+        this.loggedInUser = user;
+    }
+
+    @FXML
+    public void initialize() {
+        String currentTheme = ThemeManager.getTheme();
+        if (currentTheme != null && currentTheme.contains("dark")) {
+            themeToggle.setSelected(true);
+            themeToggle.setText("Dark Mode");
+        } else {
+            themeToggle.setSelected(false);
+            themeToggle.setText("Light Mode");
+        }
+        applyThemeToCurrentScene();
     }
 
     @FXML
     private void handleThemeChange() {
-        String theme = themeToggle.isSelected() ? "/styles/dark.css" : "/styles/light.css";
-        ThemeManager.setTheme(theme);
+        String newTheme;
+        if (themeToggle.isSelected()) {
+            newTheme = "/styles/dark.css";
+            themeToggle.setText("Dark Mode");
+        } else {
+            newTheme = "/styles/light.css";
+            themeToggle.setText("Light Mode");
+        }
+        ThemeManager.setTheme(newTheme);
+        applyThemeToCurrentScene();
 
-        // apply it immediately to the settings window to see it change
-        applyTheme(settingsRoot.getScene());
+        // If you implement per-user storage, save here
+    }
+
+    private void applyThemeToCurrentScene() {
+        Scene currentScene = settingsRoot.getScene();
+        if (currentScene != null) {
+            String theme = ThemeManager.getTheme();
+            if (theme != null) {
+                currentScene.getStylesheets().clear();
+                try {
+                    currentScene.getStylesheets().add(getClass().getResource(theme).toExternalForm());
+                } catch (Exception e) {
+                    System.err.println("Could not load theme: " + theme);
+                }
+            }
+        }
     }
 
     @FXML
     private void handleBack(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/menuView.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-        // 1. Create the Menu scene
-        Scene scene = new Scene(loader.load(), 900, 600);
-
-        // 2. Check the Manager and apply the "Paint"
+        Scene scene = new Scene(loader.load(), 1024, 700);
+        MenuController menuController = loader.getController();
+        menuController.setLoggedInUser(loggedInUser);
         String theme = ThemeManager.getTheme();
         if (theme != null) {
             scene.getStylesheets().add(getClass().getResource(theme).toExternalForm());
         }
         stage.setScene(scene);
         stage.setTitle("Camo-Gear Bistro | Menu");
+        stage.show();
+    }
+
+    @FXML
+    private void handleBackToLogin(ActionEvent event) throws IOException {
+        // Optional: reset theme on logout? Actually handled in MenuController logout.
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/loginView.fxml"));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(loader.load(), 400, 500);
+        String theme = ThemeManager.getTheme();
+        if (theme != null) {
+            scene.getStylesheets().add(getClass().getResource(theme).toExternalForm());
+        }
+        stage.setScene(scene);
+        stage.setTitle("Camo-Gear Bistro | Login");
         stage.show();
     }
 }

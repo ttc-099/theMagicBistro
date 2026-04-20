@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="16" prefHeight="600.0" prefWidth="800.0"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.files.projBistro.controllers.LowStockController"
+      style="-fx-background-color: #f5f5f5;">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20" />
+    </padding>
+
+    <!-- header -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Label text="⚠️ LOW STOCK ALERTS" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #e74c3c;" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="statusLabel" text="Checking stock levels..." style="-fx-text-fill: #666;" />
+    </HBox>
+
+    <Separator />
+
+    <!-- table -->
+    <TableView fx:id="lowStockTable" VBox.vgrow="ALWAYS" style="-fx-border-color: #ddd; -fx-border-radius: 4;">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="colName" text="Item Name" prefWidth="200"/>
+            <TableColumn fx:id="colCurrentStock" text="Current Stock" prefWidth="100"/>
+            <TableColumn fx:id="colCharacter" text="Character" prefWidth="120"/>
+            <TableColumn fx:id="colType" text="Type" prefWidth="100"/>
+            <TableColumn fx:id="colAction" text="Action" prefWidth="150"/>
+        </columns>
+        <placeholder>
+            <Label text="✅ All stock levels are healthy!" style="-fx-text-fill: #27ae60; -fx-font-weight: bold;" />
+        </placeholder>
+    </TableView>
+
+    <!-- action buttons -->
+    <HBox spacing="12" alignment="CENTER">
+        <Button text="🔄 Refresh" onAction="#refreshStock" prefWidth="150" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;" />
+        <Button text="📦 Restock Selected" onAction="#handleRestock" prefWidth="150" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold;" />
+    </HBox>
+</VBox>

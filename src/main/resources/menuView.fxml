@@ -1,86 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?> <!-- -->
-<?import javafx.scene.layout.*?> <!-- -->
-<?import javafx.scene.image.*?> <!-- -->
-<?import javafx.geometry.Insets?> <!-- -->
 
-<!-- -->
-<BorderPane prefHeight="1024.0" prefWidth="700.0"
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="700.0" prefWidth="1024.0"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.files.projBistro.controllers.MenuController">
+    <padding>
+        <Insets top="16" right="16" bottom="16" left="16" />
+    </padding>
 
-    <!-- banner -->
     <top>
-        <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 10;">
-            <Label text="Camo-Gear Bistro Menu" style="-fx-font-size: 24; -fx-font-weight: bold;" />
-            <Region HBox.hgrow="ALWAYS" /> <Button fx:id="settingsBtn" text="✱ Settings" onAction="#handleOpenSettings" />
-        </HBox>
-    </top>
+        <VBox spacing="8">
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <padding>
+                    <Insets top="10" right="15" bottom="10" left="15" />
+                </padding>
+                <Label text="CAMO-GEAR BISTRO"/>
+                <Region HBox.hgrow="ALWAYS"/>
 
-    <!-- main pane -->
-    <center>
-        <VBox spacing="10">
-            <TabPane fx:id="categoryTabs" tabClosingPolicy="UNAVAILABLE">
-                <!-- sub-tabs -->
-                <tabs>
-                    <!-- chloe -->
-                    <Tab text="Chloe">
-                        <ScrollPane fitToWidth="true" prefHeight="450.0">
-                            <TilePane fx:id="chloeGrid" hgap="20" vgap="20" prefColumns="3">
-                                <padding>
-                                    <Insets top="20" right="20" bottom="20" left="20"/>
-                                </padding>
-                            </TilePane>
-                        </ScrollPane>
-                    </Tab>
+                <Button fx:id="settingsBtn" text="Settings" onAction="#handleOpenSettings" />
 
-                    <!-- mimi -->
-                    <Tab text="Mimi" />
-
-                    <!-- metsu -->
-                    <Tab text="Metsu" />
-
-                    <!--  -->
-                    <Tab text="Laniard" />
-
-                </tabs>
-            </TabPane>
-
-            <!-- add to order button -->
-            <HBox alignment="CENTER" style="-fx-padding: 10;">
-                <Button text="Add to Order" onAction="#handleAddItem" prefWidth="150" />
+                <Button fx:id="authBtn" text="Login" onAction="#handleAuthAction" />
             </HBox>
 
+            <HBox alignment="CENTER_LEFT">
+                <padding>
+                    <Insets top="10" right="15" bottom="10" left="15" />
+                </padding>
+                <Label fx:id="welcomeLabel" text="Welcome, Guest!"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="switchAccountBtn" text="Switch Account" onAction="#handleSwitchAccount"
+                        visible="false"/>
+            </HBox>
         </VBox>
+    </top>
+
+    <center>
+        <TabPane fx:id="categoryTabs" tabClosingPolicy="UNAVAILABLE" />
     </center>
 
     <right>
+        <VBox spacing="18" prefWidth="300">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15" />
+            </padding>
 
-        <!-- setting -->
-        <VBox spacing="15" prefWidth="250" alignment="TOP_CENTER"
-              style="-fx-border-color: #cccccc; -fx-border-width: 0 0 0 1; -fx-padding: 15;">
+            <Label text="YOUR ORDER"/>
 
-            <!-- template, replace for png -->
-            <StackPane style="-fx-border-color: red; -fx-border-width: 2;">
-                <ImageView fx:id="characterPortrait" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+            <Separator />
+
+            <ListView fx:id="cartListView" VBox.vgrow="ALWAYS">
+                <placeholder>
+                    <Label text="Your cart is empty."/>
+                </placeholder>
+            </ListView>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10" />
+                </padding>
+                <ImageView fx:id="characterImageView" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@icons/ic_Chloe/icon_chloe.jpeg" />
+                    </image>
                 </ImageView>
-            </StackPane>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label fx:id="dialogueLabel" text="Please select an item to start." wrapText="true"/>
+                </VBox>
+            </HBox>
 
-            <!-- dialogue box, replace for image  -->
-            <Label text="Dialog area..." style="-fx-font-style: italic; -fx-border-color: purple;" />
+            <Separator />
 
-            <!-- cart list for added items, dynamically grow -->
-            <VBox VBox.vgrow="ALWAYS" spacing="5">
-                <Label text="Your Cart" style="-fx-font-weight: bold;" />
-                <ListView fx:id="cartListView" VBox.vgrow="ALWAYS" />
-            </VBox>
+            <Label fx:id="totalLabel" text="Total: 0.00"/>
 
-            <!-- total -->
-            <Label fx:id="totalLabel" text="Total: £0.00" style="-fx-font-size: 18;" />
-            <Button text="Submit Order" fx:id="submitBtn" prefWidth="200" style="-fx-font-size: 16;" />
+            <Button fx:id="submitBtn" text="SUBMIT ORDER" onAction="#handleSubmitOrder"
+                    prefHeight="40" prefWidth="270" />
+
+            <Button text="Clear Cart" onAction="#handleClearCart"
+                    prefHeight="35" prefWidth="270" />
         </VBox>
-
     </right>
-
 </BorderPane>

@@ -1,0 +1,40 @@
+/* dashboard.css - styles for the admin dashboard sidebar */
+
+/* navigation menu item container */
+.nav-item {
+    -fx-padding: 10 15 10 15;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-alignment: center-left;
+}
+
+/* normal state - white background, dark text */
+.nav-item .nav-icon {
+    -fx-fit-width: 24;
+    -fx-fit-height: 24;
+}
+
+.nav-item .nav-label {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 14px;
+}
+
+/* hover state - blue background, white text */
+.nav-item:hover {
+    -fx-background-color: #3498db;
+}
+
+.nav-item:hover .nav-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* active/selected state (optional - for when an item is clicked) */
+.nav-item:selected {
+    -fx-background-color: #2980b9;
+}
+
+.nav-item:selected .nav-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}

@@ -1,80 +1,305 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
 
-<VBox spacing="10" prefHeight="700.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml" fx:controller="com.files.projBistro.controllers.AdminController"
-      style="-fx-padding: 15; -fx-background-color: #1a1a1a;">
+<VBox spacing="20" prefHeight="700.0" prefWidth="1024.0"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.files.projBistro.controllers.admin.AdminController"
+      style="-fx-background-color: #f5f5f5;">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20" />
+    </padding>
 
-    <Label text="TACTICAL ADMIN COMMAND" style="-fx-text-fill: #00ff00; -fx-font-size: 22; -fx-font-weight: bold; -fx-font-family: 'Consolas';" />
+    <!-- header bar with title and status -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Label text="Admin Command Center" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="statusLabel" text="System ready." style="-fx-text-fill: #666;" />
+    </HBox>
 
-    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" style="-fx-background-color: #2b2b2b;">
+    <Separator />
+
+    <!-- tab pane -->
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
         <tabs>
-            <Tab text="INVENTORY LOGS">
-                <VBox spacing="15" style="-fx-padding: 15;">
-                    <TableView fx:id="inventoryTable" VBox.vgrow="ALWAYS">
-                        <columns>
-                            <TableColumn fx:id="colId" text="ID" prefWidth="50" />
-                            <TableColumn fx:id="colName" text="Item Name" prefWidth="180" />
-                            <TableColumn fx:id="colPrice" text="Price (£)" prefWidth="80" />
-                            <TableColumn fx:id="colStock" text="Stock" prefWidth="80" />
-                            <TableColumn fx:id="colCategory" text="Character" prefWidth="120" />
-                        </columns>
-                    </TableView>
 
-                    <Separator />
+            <!-- ===== TAB 1: INVENTORY MANAGEMENT (SCROLLABLE) ===== -->
+            <Tab text="INVENTORY MANAGEMENT">
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                    <content>
+                        <VBox spacing="16">
+                            <padding>
+                                <Insets top="15" right="15" bottom="15" left="15" />
+                            </padding>
 
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <TextField fx:id="nameInput" promptText="Item Name" prefWidth="140" />
-                        <TextField fx:id="priceInput" promptText="Price" prefWidth="60" />
-                        <TextField fx:id="stockInput" promptText="Stock" prefWidth="60" />
-                        <ComboBox fx:id="categoryBox" promptText="Owner" prefWidth="100" />
+                            <Label text="Current Inventory:" style="-fx-font-weight: bold;" />
+                            <TableView fx:id="inventoryTable" prefHeight="400" minHeight="300" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="colId" text="ID" prefWidth="50" />
+                                    <TableColumn fx:id="colName" text="Item Name" prefWidth="200" />
+                                    <TableColumn fx:id="colPrice" text="Price (£)" prefWidth="80" />
+                                    <TableColumn fx:id="colStock" text="Stock" prefWidth="80" />
+                                    <TableColumn fx:id="colCategory" text="Character" prefWidth="120" />
+                                    <TableColumn fx:id="colActive" text="Status" prefWidth="100" />
+                                </columns>
+                            </TableView>
 
-                        <Button text="+ Add" onAction="#handleAddItem" style="-fx-background-color: #2ecc71; -fx-text-fill: white;" />
-                        <Button text="✎ Edit" onAction="#handleEditItem" style="-fx-background-color: #3498db; -fx-text-fill: white;" />
+                            <Separator />
 
-                        <Region HBox.hgrow="ALWAYS" />
-                        <Button text="🗑 Remove" onAction="#handleRemoveItem" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" />
-                    </HBox>
-                </VBox>
+                            <Label text="Item Details:" style="-fx-font-weight: bold;" />
+
+                            <!-- CORRECTED: All form fields in one GridPane -->
+                            <GridPane hgap="15" vgap="12" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: #ddd; -fx-border-radius: 6;">
+                                <!-- Row 0: Name -->
+                                <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <TextField fx:id="nameInput" promptText="Item name" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                <!-- Row 1: Price -->
+                                <Label text="Price:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextField fx:id="priceInput" promptText="0.00" prefWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                <!-- Row 2: Stock -->
+                                <Label text="Stock:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <TextField fx:id="stockInput" promptText="0" prefWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                                <!-- Row 3: Character -->
+                                <Label text="Character:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                <ComboBox fx:id="categoryBox" promptText="Select character" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                                <!-- Row 4: Description (FIXED - properly placed) -->
+                                <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                <TextArea fx:id="descriptionInput" prefHeight="80" wrapText="true" prefWidth="400" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                                <!-- Row 5: Image button -->
+                                <Label text="Image:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                <Button fx:id="chooseImageBtn" text="Browse..." onAction="#handleChooseImage" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                            </GridPane>
+
+                            <!-- Image preview section (separate from GridPane) -->
+                            <HBox spacing="20" alignment="CENTER_LEFT">
+                                <VBox spacing="6">
+                                    <Label text="Selected Image:" style="-fx-font-weight: bold;" />
+                                    <Label fx:id="imagePathLabel" text="No image selected" wrapText="true" prefWidth="220" />
+                                </VBox>
+                                <StackPane prefWidth="160" prefHeight="120" style="-fx-border-color: #ddd; -fx-background-color: white;">
+                                    <ImageView fx:id="imagePreview" fitWidth="140" fitHeight="100" preserveRatio="true" />
+                                </StackPane>
+                            </HBox>
+
+                            <!-- Action buttons -->
+                            <HBox spacing="12">
+                                <Button text="Add Item" onAction="#handleAddItemPopup" style="-fx-background-color: #2ecc71; -fx-text-fill: white;" />
+                                <Button text="Save Changes" onAction="#handleSaveItem" style="-fx-background-color: #3498db; -fx-text-fill: white;" />
+                                <Button text="Delete Item" onAction="#handleHardDeleteItem" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button text="Clear Form" onAction="#clearInputs" />
+                            </HBox>
+
+                            <Region prefHeight="20" />
+                        </VBox>
+                    </content>
+                </ScrollPane>
             </Tab>
 
-            <Tab text="CHARACTER COMMS">
-                <VBox spacing="15" style="-fx-padding: 15;">
-                    <HBox spacing="15">
-                        <VBox spacing="5">
-                            <Label text="Select Unit:" style="-fx-text-fill: white;" />
-                            <ComboBox fx:id="dialogueCharBox" prefWidth="150" promptText="Select Character" onAction="#loadDialogueTable" />
-                        </VBox>
-                        <VBox spacing="5" HBox.hgrow="ALWAYS">
-                            <Label text="Active Dialogue Lines:" style="-fx-text-fill: white;" />
-                            <TableView fx:id="dialogueTable" prefHeight="300">
+            <!-- ===== TAB 2: CHARACTER DIALOGUE ===== -->
+            <Tab text="CHARACTER DIALOGUE">
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                    <content>
+                        <VBox spacing="16">
+                            <padding>
+                                <Insets top="15" right="15" bottom="15" left="15" />
+                            </padding>
+
+                            <HBox spacing="20">
+                                <VBox spacing="8" prefWidth="200">
+                                    <Label text="Select Character:" style="-fx-font-weight: bold;" />
+                                    <ComboBox fx:id="dialogueCharBox" prefWidth="180" promptText="Select character" />
+                                </VBox>
+                            </HBox>
+
+                            <Label text="Existing Dialogue Lines:" style="-fx-font-weight: bold;" />
+                            <TableView fx:id="dialogueTable" prefHeight="300" minHeight="200" VBox.vgrow="ALWAYS">
                                 <columns>
-                                    <TableColumn fx:id="colTrigger" text="Trigger" prefWidth="120" />
+                                    <TableColumn fx:id="colDialogueId" text="ID" prefWidth="50" />
+                                    <TableColumn fx:id="colTrigger" text="Trigger" prefWidth="150" />
                                     <TableColumn fx:id="colText" text="Dialogue Content" prefWidth="400" />
                                 </columns>
                             </TableView>
+
+                            <Separator />
+
+                            <Label text="Add New Dialogue" style="-fx-font-weight: bold; -fx-text-fill: #27ae60;" />
+
+                            <GridPane hgap="15" vgap="12" style="-fx-background-color: #e8f8f5; -fx-padding: 15; -fx-border-color: #a3e4d7; -fx-border-radius: 6;">
+                                <Label text="Trigger Type:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <ComboBox fx:id="triggerInputBox" promptText="E.g., WELCOME, ITEM_SELECTED" prefWidth="200"
+                                          GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                <Label text="Dialogue Text:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextArea fx:id="dialogueInputArea" prefHeight="80" wrapText="true" prefWidth="400"
+                                          promptText="Enter the character's dialogue line here..."
+                                          GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                <Button text="Add New Dialogue" onAction="#handleAddDialogue" prefWidth="180"
+                                        GridPane.columnIndex="1" GridPane.rowIndex="2"
+                                        style="-fx-background-color: #2ecc71; -fx-text-fill: white;" />
+                            </GridPane>
+
+                            <Separator />
+
+                            <Label text="Edit or Delete Existing Dialogue" style="-fx-font-weight: bold; -fx-text-fill: #2980b9;" />
+
+                            <GridPane hgap="15" vgap="12" style="-fx-background-color: #ebf5fb; -fx-padding: 15; -fx-border-color: #aed6f1; -fx-border-radius: 6;">
+                                <Label text="Instructions:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <Label text="Click any row in the table above, then edit below." GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-text-fill: #666;" />
+
+                                <Label text="Trigger Type:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <ComboBox fx:id="editTriggerBox" prefWidth="200" promptText="Select trigger"
+                                          GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                <Label text="Dialogue Text:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <TextArea fx:id="editDialogueArea" prefHeight="80" wrapText="true" prefWidth="400"
+                                          promptText="Selected dialogue will appear here."
+                                          GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                                <HBox spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                    <Button text="Save Changes" onAction="#handleUpdateDialogue"
+                                            style="-fx-background-color: #3498db; -fx-text-fill: white;" />
+                                    <Button text="Delete Selected" onAction="#handleDeleteDialogue"
+                                            style="-fx-background-color: #e74c3c; -fx-text-fill: white;" />
+                                    <Button text="Clear Selection" onAction="#clearDialogueSelection" />
+                                </HBox>
+                            </GridPane>
+
+                            <Region prefHeight="20" />
                         </VBox>
-                    </HBox>
+                    </content>
+                </ScrollPane>
+            </Tab>
 
-                    <Separator />
+            <!-- ===== TAB 3: SALES AND ANALYTICS (SCROLLABLE) ===== -->
+            <Tab text="SALES AND ANALYTICS">
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                    <content>
+                        <VBox spacing="16">
+                            <padding>
+                                <Insets top="15" right="15" bottom="15" left="15" />
+                            </padding>
 
-                    <GridPane hgap="10" vgap="10">
-                        <Label text="Trigger Type:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-text-fill: white;" />
-                        <ComboBox fx:id="triggerInputBox" promptText="e.g. ITEM_SELECTED" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                            <HBox spacing="15" alignment="CENTER_LEFT">
+                                <Label text="Date Range:" style="-fx-font-weight: bold;" />
+                                <DatePicker fx:id="startDatePicker" promptText="Start date" />
+                                <Label text="to" />
+                                <DatePicker fx:id="endDatePicker" promptText="End date" />
+                                <Button text="Apply Filter" onAction="#refreshSalesSummary" style="-fx-background-color: #3498db; -fx-text-fill: white;" />
+                            </HBox>
 
-                        <Label text="Dialogue Text:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-text-fill: white;" />
-                        <TextArea fx:id="dialogueInputArea" prefHeight="80" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                            <!-- filters row -->
+                            <HBox spacing="15" alignment="CENTER_LEFT">
+                                <Label text="Category:" style="-fx-font-weight: bold;" />
+                                <ComboBox fx:id="categoryFilterBox" prefWidth="120" />
 
-                        <Button text="Save Dialogue" onAction="#handleAddDialogue" prefWidth="120"
-                                style="-fx-background-color: #f1c40f; -fx-text-fill: black; -fx-font-weight: bold;"
-                                GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                    </GridPane>
-                </VBox>
+                                <Label text="Min Price:" style="-fx-font-weight: bold;" />
+                                <TextField fx:id="minPriceFilter" promptText="0" prefWidth="80" />
+
+                                <Label text="Max Price:" style="-fx-font-weight: bold;" />
+                                <TextField fx:id="maxPriceFilter" promptText="999" prefWidth="80" />
+
+                                <Button fx:id="applyFiltersBtn" text="Apply Filters"
+                                        style="-fx-background-color: #3498db; -fx-text-fill: white;" />
+                            </HBox>
+
+                            <Separator />
+
+                            <HBox spacing="20" alignment="CENTER">
+                                <VBox alignment="CENTER" spacing="8" prefWidth="200"
+                                      style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: #ddd; -fx-border-radius: 8;">
+                                    <Label text="Total Revenue" />
+                                    <Label fx:id="totalRevenueLabel" text="£0.00" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #27ae60;" />
+                                </VBox>
+
+                                <VBox alignment="CENTER" spacing="8" prefWidth="200"
+                                      style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: #ddd; -fx-border-radius: 8;">
+                                    <Label text="Total Orders" />
+                                    <Label fx:id="totalOrdersLabel" text="0" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+                                </VBox>
+
+                                <VBox alignment="CENTER" spacing="8" prefWidth="200"
+                                      style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: #ddd; -fx-border-radius: 8;">
+                                    <Label text="Items Sold" />
+                                    <Label fx:id="totalItemsSoldLabel" text="0" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+                                </VBox>
+
+                                <VBox alignment="CENTER" spacing="8" prefWidth="200"
+                                      style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: #ddd; -fx-border-radius: 8;">
+                                    <Label text="Average Order Value" />
+                                    <Label fx:id="avgOrderValueLabel" text="£0.00" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+                                </VBox>
+                            </HBox>
+
+                            <Separator />
+
+                            <Label text="Most Popular Items:" style="-fx-font-weight: bold;" />
+                            <ListView fx:id="popularItemsList" prefHeight="300" minHeight="200" VBox.vgrow="ALWAYS" />
+
+                            <Separator />
+
+                            <Label text="Recent Orders:" style="-fx-font-weight: bold;" />
+                            <TableView fx:id="recentOrdersTable" prefHeight="350" minHeight="250" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="colOrderIdSales" text="Order #" prefWidth="80" />
+                                    <TableColumn fx:id="colCustomerName" text="Customer" prefWidth="150" />
+                                    <TableColumn fx:id="colOrderTotal" text="Total" prefWidth="100" />
+                                    <TableColumn fx:id="colOrderDate" text="Date" prefWidth="150" />
+                                    <TableColumn fx:id="colOrderStatus" text="Status" prefWidth="100" />
+                                </columns>
+                            </TableView>
+
+                            <HBox spacing="12" alignment="CENTER_RIGHT">
+                                <Button text="Export to CSV" onAction="#handleExportSales" />
+                            </HBox>
+
+                            <Region prefHeight="20" />
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </Tab>
+
+            <!-- ===== TAB 4: MENU PREVIEW ===== -->
+            <Tab text="MENU PREVIEW">
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                    <content>
+                        <VBox spacing="16">
+                            <padding>
+                                <Insets top="15" right="15" bottom="15" left="15" />
+                            </padding>
+
+                            <Label text="Live Menu Preview" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #2c3e50;" />
+                            <Label text="This is how customers see your menu. Only active items (green status) will appear."
+                                   style="-fx-text-fill: #666; -fx-font-size: 12px;" />
+
+                            <Separator />
+
+                            <TabPane fx:id="previewTabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" />
+
+                            <Separator />
+
+                            <HBox spacing="12" alignment="CENTER_RIGHT">
+                                <Button text="Refresh Preview" onAction="#refreshMenuPreview"
+                                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;" />
+                            </HBox>
+
+                            <Region prefHeight="20" />
+                        </VBox>
+                    </content>
+                </ScrollPane>
             </Tab>
         </tabs>
     </TabPane>
 
-    <Button text="Back to Menu" onAction="#handleBack" style="-fx-background-color: transparent; -fx-text-fill: grey; -fx-border-color: grey;" />
+    <Button text="← Back to Menu" onAction="#handleBack" />
 </VBox>

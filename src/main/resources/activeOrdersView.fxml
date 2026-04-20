@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.files.projBistro.controllers.ActiveOrdersController"
+            style="-fx-background-color: #f5f5f5;">
+
+    <top>
+        <VBox spacing="12">
+            <padding>
+                <Insets top="20" right="20" bottom="15" left="20" />
+            </padding>
+            <Label text="📋 ACTIVE ORDERS" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Button text="🔄 Refresh" onAction="#refreshOrders"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;" />
+                <Label fx:id="statusLabel" text="Loading orders..." style="-fx-text-fill: #7f8c8d; -fx-font-style: italic;" />
+            </HBox>
+            <Separator />
+        </VBox>
+    </top>
+
+    <center>
+        <ListView fx:id="ordersListView"
+                  style="-fx-background-color: transparent; -fx-border-color: transparent;"
+                  VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets top="10" right="15" bottom="10" left="15" />
+            </padding>
+        </ListView>
+    </center>
+
+    <bottom>
+        <VBox spacing="10">
+            <Separator />
+            <HBox spacing="15" alignment="CENTER_RIGHT">
+                <padding>
+                    <Insets top="10" right="20" bottom="20" left="20" />
+                </padding>
+                <Button text="✓ Complete Selected" onAction="#handleCompleteOrder"
+                        style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;" />
+                <Button text="✗ Cancel Selected" onAction="#handleCancelOrder"
+                        style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;" />
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>

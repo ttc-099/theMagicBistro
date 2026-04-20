@@ -1,61 +1,164 @@
-/* The main background */
 .root {
-    -fx-background-color: #1a1a1a;
+    /* Main Backgrounds */
+    -main-bg: #2d2f43;
+    -secondary-bg: #1e1e1e;
+    -tertiary-bg: #121212;
+    
+    /* Text Colors */
+    -main-text: #ffffff;
+    -secondary-text: #cccccc;
+    -muted-text: #888888;
+    
+    /* Brand / Accent Colors */
+    -accent-color: #2c0303;
+    -accent-hover: #444444;
+    
+    /* Status Colors */
+    -success-color: #27ae60;
+    -warning-color: #f39c12;
+    -error-color: #e74c3c;
+    -info-color: #3498db;
+
+    /* Borders */
+    -border-color: #444444;
+
+    -fx-background-color: -main-bg;
 }
 
-/* Make the TabPane header and content area dark */
+.label, .tab .tab-label {
+    -fx-text-fill: -main-text;
+}
+
+.button {
+    -fx-background-color: -accent-color;
+    -fx-text-fill: white;
+    -fx-border-color: -border-color;
+}
+
+.button:hover {
+    -fx-background-color: -accent-hover;
+}
+
+.text-field, .password-field, .text-area {
+    -fx-background-color: #2c2c2c;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: -muted-text;
+}
+
+.table-view {
+    -fx-background-color: -secondary-bg;
+    -fx-control-inner-background: -secondary-bg;
+}
+
+.table-view .column-header {
+    -fx-background-color: #333333;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+}
+
 .tab-pane .tab-header-background {
-    -fx-background-color: #2b2b2b;
+    -fx-background-color: -secondary-bg;
 }
 
 .tab-pane .tab-content-area {
-    -fx-background-color: #1a1a1a;
+    -fx-background-color: -tertiary-bg;
 }
 
-/* Target the actual area where the Nachos are sitting */
-.tile-pane, .scroll-pane {
-    -fx-background-color: transparent;
-    -fx-background: transparent; /* ScrollPane specifically needs this */
-}
-
-/* Make the Cart list background dark too */
-.list-view {
-    -fx-background-color: #333;
-}
-
-/* Change the text color for everything */
-.label, .tab .tab-label {
-    -fx-text-fill: #00ff00; /* Tactical Green */
-}
-
-/* The actual Tab buttons (Chloe, Mimi, etc.) */
 .tab {
-    -fx-background-color: #333333;
-    -fx-border-color: #444444;
+    -fx-background-color: #2c2c2c;
 }
 
-/* The selected tab (the one you are currently viewing) */
 .tab:selected {
-    -fx-background-color: #00ff00; /* Green highlight for active mission */
+    -fx-background-color: -accent-hover;
 }
 
-.tab:selected .tab-label {
-    -fx-text-fill: #000000; /* Black text on green background for readability */
+.list-view {
+    -fx-background-color: -secondary-bg;
+    -fx-control-inner-background: -secondary-bg;
 }
 
-/* The non-selected tab labels */
-.tab-label {
-    -fx-text-fill: #00ff00;
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
 }
 
-/* The Nitro Nachos buttons in the grid */
-.button {
-    -fx-background-color: #444444;
-    -fx-text-fill: #ffffff;
-    -fx-border-color: #666666;
+/* Custom Styles */
+.header-bar {
+    -fx-background-color: #1a1a1a;
+    -fx-border-color: -border-color;
+    -fx-border-width: 0 0 1 0;
 }
 
-/* Hover effect for buttons - functional feedback! */
-.button:hover {
-    -fx-background-color: #555555;
+.sidebar {
+    -fx-background-color: #1a1a1a;
+    -fx-border-color: -border-color;
+    -fx-border-width: 0 0 0 1;
+}
+
+.sub-header {
+    -fx-background-color: -tertiary-bg;
+}
+
+.dialogue-box {
+    -fx-background-color: #222222;
+}
+
+.accent-text {
+    -fx-text-fill: #3498db;
+}
+
+.muted-text {
+    -fx-text-fill: -muted-text;
+}
+
+.bold-text {
+    -fx-font-weight: bold;
+}
+
+.item-card {
+    -fx-background-color: -secondary-bg;
+    -fx-border-color: -border-color;
+    -fx-padding: 15;
+}
+
+.remove-button {
+    -fx-background-color: -error-color;
+    -fx-text-fill: white;
+    -fx-font-size: 10;
+}
+
+.login-button {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+}
+
+.logout-button {
+    -fx-background-color: -error-color;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+}
+
+.status-success {
+    -fx-text-fill: -success-color;
+}
+
+.status-error {
+    -fx-text-fill: -error-color;
+}
+
+.status-warning {
+    -fx-text-fill: -warning-color;
+}
+
+.status-info {
+    -fx-text-fill: -info-color;
+}
+
+.status-muted {
+    -fx-text-fill: -muted-text;
 }

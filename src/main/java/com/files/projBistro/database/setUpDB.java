@@ -19,7 +19,8 @@ public class setUpDB {
                         "username TEXT UNIQUE, " +
                         "password TEXT, " +
                         "role TEXT, " + // 'Admin' or 'Customer'
-                        "admin_pin TEXT);",
+                        "admin_pin TEXT, " +
+                        "phone_number TEXT);",
 
                 // 3. CHARACTER CATEGORIES
                 // the "Owners" of the menus (Chloe, Mimi, etc.)
@@ -57,6 +58,7 @@ public class setUpDB {
                         "order_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "user_id INTEGER, " +
                         "total_price REAL, " +
+                        "status TEXT DEFAULT 'pending', " +
                         "order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
                         "FOREIGN KEY(user_id) REFERENCES users(user_id));",
 

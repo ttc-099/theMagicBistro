@@ -1,6 +1,5 @@
 package com.files.projBistro;
 
-import com.files.projBistro.database.populateDB;
 import com.files.projBistro.database.setUpDB;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

@@ -1,0 +1,184 @@
+package com.files.projBistro.controllers.admin;
+
+import com.files.projBistro.models.dao.AdminDAO;
+import com.files.projBistro.models.dao.DialogueDAO;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.*;
+import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+
+public class AdminDialogueController {
+
+    private ComboBox<String> dialogueCharBox;
+    private TableView<DialogueDAO.DialogueEntry> dialogueTable;
+    private TableColumn<DialogueDAO.DialogueEntry, Integer> colDialogueId;
+    private TableColumn<DialogueDAO.DialogueEntry, String> colTrigger;
+    private TableColumn<DialogueDAO.DialogueEntry, String> colText;
+    private ComboBox<String> triggerInputBox;
+    private TextArea dialogueInputArea;
+    private ComboBox<String> editTriggerBox;
+    private TextArea editDialogueArea;
+
+    private AdminDAO adminDAO;
+    private DialogueDAO dialogueDAO;
+    private BooleanSupplier isAuthorized;
+    private Consumer<String> showStatus;
+
+    public void init(AdminDAO adminDAO, DialogueDAO dialogueDAO, Label statusLabel,
+                     Consumer<String> showStatus, BooleanSupplier isAuthorized) {
+        this.adminDAO = adminDAO;
+        this.dialogueDAO = dialogueDAO;
+        this.showStatus = showStatus;
+        this.isAuthorized = isAuthorized;
+    }
+
+    public void setUIElements(ComboBox<String> dialogueCharBox,
+                              TableView<DialogueDAO.DialogueEntry> dialogueTable,
+                              TableColumn<DialogueDAO.DialogueEntry, Integer> colDialogueId,
+                              TableColumn<DialogueDAO.DialogueEntry, String> colTrigger,
+                              TableColumn<DialogueDAO.DialogueEntry, String> colText,
+                              ComboBox<String> triggerInputBox,
+                              TextArea dialogueInputArea,
+                              ComboBox<String> editTriggerBox,
+                              TextArea editDialogueArea) {
+        this.dialogueCharBox = dialogueCharBox;
+        this.dialogueTable = dialogueTable;
+        this.colDialogueId = colDialogueId;
+        this.colTrigger = colTrigger;
+        this.colText = colText;
+        this.triggerInputBox = triggerInputBox;
+        this.dialogueInputArea = dialogueInputArea;
+        this.editTriggerBox = editTriggerBox;
+        this.editDialogueArea = editDialogueArea;
+
+        setupTableColumns();
+        setupCharacterSelectionListener();
+        setupTableSelectionListener();
+        setupDropdowns();
+    }
+
+    private void setupTableColumns() {
+        colDialogueId.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
+        colTrigger.setCellValueFactory(cellData -> cellData.getValue().triggerTypeProperty());
+        colText.setCellValueFactory(cellData -> cellData.getValue().textProperty());
+    }
+
+    private void setupCharacterSelectionListener() {
+        dialogueCharBox.getSelectionModel().selectedItemProperty().addListener((obs, old, character) -> {
+            if (character != null) {
+                refreshTable();
+                clearDialogueSelection();
+                clearAddDialogueForm();
+            }
+        });
+    }
+
+    private void setupTableSelectionListener() {
+        dialogueTable.getSelectionModel().selectedItemProperty().addListener((obs, old, newItem) -> {
+            if (newItem != null) {
+                editTriggerBox.setValue(newItem.getTriggerType());
+                editDialogueArea.setText(newItem.getText());
+                clearAddDialogueForm();
+            }
+        });
+    }
+
+    private void setupDropdowns() {
+        ObservableList<String> characters = FXCollections.observableArrayList("Chloe", "Mimi", "Metsu", "Laniard");
+        dialogueCharBox.setItems(characters);
+        dialogueCharBox.getSelectionModel().selectFirst();
+
+        ObservableList<String> triggerOptions = FXCollections.observableArrayList(
+                "ITEM_SELECTED", "ORDER_COMPLETE", "LOGIN_GREET", "LOW_STOCK", "WELCOME"
+        );
+        triggerInputBox.setItems(triggerOptions);
+        editTriggerBox.setItems(triggerOptions);
+    }
+
+    public void handleAddDialogue() {
+        if (!isAuthorized.getAsBoolean()) return;
+        int charId = dialogueCharBox.getSelectionModel().getSelectedIndex() + 1;
+        String trigger = triggerInputBox.getValue();
+        String text = dialogueInputArea.getText();
+        if (charId < 1 || trigger == null || trigger.isEmpty() || text == null || text.isEmpty()) {
+            showStatus.accept("Please fill in all dialogue fields.");
+            return;
+        }
+        if (adminDAO.addDialogue(charId, trigger, text)) {
+            clearAddDialogueForm();
+            refreshTable();
+            showStatus.accept("Dialogue added successfully!");
+        } else {
+            showStatus.accept("Failed to add dialogue.");
+        }
+    }
+
+    public void handleUpdateDialogue() {
+        if (!isAuthorized.getAsBoolean()) return;
+        DialogueDAO.DialogueEntry selected = dialogueTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showStatus.accept("Please select a dialogue line from the table first.");
+            return;
+        }
+        String trigger = editTriggerBox.getValue();
+        String text = editDialogueArea.getText();
+        if (trigger == null || trigger.isEmpty() || text == null || text.isEmpty()) {
+            showStatus.accept("Please fill in both trigger type and dialogue text.");
+            return;
+        }
+        if (adminDAO.updateDialogue(selected.getId(), trigger, text)) {
+            refreshTable();
+            clearDialogueSelection();
+            showStatus.accept("Dialogue updated successfully!");
+        } else {
+            showStatus.accept("Failed to update dialogue.");
+        }
+    }
+
+    public void handleDeleteDialogue() {
+        if (!isAuthorized.getAsBoolean()) return;
+        DialogueDAO.DialogueEntry selected = dialogueTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showStatus.accept("Please select a dialogue line from the table first.");
+            return;
+        }
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Delete Dialogue");
+        confirm.setHeaderText("Delete this dialogue line?");
+        confirm.setContentText("This action cannot be undone.");
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            if (adminDAO.deleteDialogue(selected.getId())) {
+                refreshTable();
+                clearDialogueSelection();
+                showStatus.accept("Dialogue deleted successfully!");
+            } else {
+                showStatus.accept("Failed to delete dialogue.");
+            }
+        }
+    }
+
+    public void clearDialogueSelection() {
+        dialogueTable.getSelectionModel().clearSelection();
+        editTriggerBox.getSelectionModel().clearSelection();
+        editDialogueArea.clear();
+        showStatus.accept("Selection cleared.");
+    }
+
+    private void clearAddDialogueForm() {
+        triggerInputBox.getSelectionModel().clearSelection();
+        dialogueInputArea.clear();
+    }
+
+    public void refreshTable() {
+        int charId = dialogueCharBox.getSelectionModel().getSelectedIndex() + 1;
+        if (charId > 0 && charId <= 4) {
+            List<DialogueDAO.DialogueEntry> dialogues = dialogueDAO.getDialoguesByCharacter(charId);
+            dialogueTable.setItems(FXCollections.observableArrayList(dialogues));
+            dialogueTable.refresh();
+        } else {
+            dialogueTable.setItems(FXCollections.observableArrayList());
+        }
+    }
+}

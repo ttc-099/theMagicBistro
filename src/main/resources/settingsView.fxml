@@ -3,19 +3,33 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox fx:id="settingsRoot" spacing="20" alignment="CENTER" prefHeight="300.0" prefWidth="400.0"
+<VBox fx:id="settingsRoot" spacing="20" alignment="CENTER" prefHeight="400.0" prefWidth="450.0"
       xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.files.projBistro.controllers.SettingsController"
-      style="-fx-padding: 30;">
+      fx:controller="com.files.projBistro.controllers.SettingsController">
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30" />
+    </padding>
 
-    <Label text="SYSTEM SETTINGS" style="-fx-font-size: 20; -fx-font-weight: bold;" />
+    <Label text="SETTINGS" styleClass="bold-text" style="-fx-font-size: 20;"/>
 
+    <Separator />
+
+    <!-- Theme Settings -->
     <HBox spacing="15" alignment="CENTER">
-        <Label text="Display Theme:" />
-        <ToggleButton fx:id="themeToggle" text="Light Mode" onAction="#handleThemeChange" prefWidth="120"/>
+        <Label text="Display Theme:" style="-fx-text-fill: #888; -fx-font-size: 14;"/>
+        <ToggleButton fx:id="themeToggle" text="Light Mode" onAction="#handleThemeChange"
+                      prefWidth="120" />
     </HBox>
+
+    <Separator />
 
     <Region VBox.vgrow="ALWAYS" />
 
-    <Button text="Back to Menu" onAction="#handleBack" prefWidth="100" />
+    <!-- Button Container -->
+    <VBox spacing="10" alignment="CENTER" prefWidth="200">
+        <Button text="Back to Menu" onAction="#handleBack" prefWidth="180" />
+
+        <Button text="Back to Login" onAction="#handleBackToLogin" prefWidth="180" />
+    </VBox>
+
 </VBox>

@@ -13,67 +13,102 @@ import java.io.IOException;
 
 public class LoginController {
 
-    // call FXML (ref: loginView.fxml)
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private Label errorLabel;
+    @FXML private Button loginBtn;
+
+    private LoginDAO loginDAO = new LoginDAO();
 
     @FXML
     public void handleLogin(ActionEvent event) {
         String inputUser = usernameField.getText();
         String inputPass = passwordField.getText();
 
-        LoginDAO dao = new LoginDAO();
-        // Renamed the object to loggedInUser to avoid the name clash
-        User loggedInUser = dao.verifyLogin(inputUser, inputPass);
+        // ===== VALIDATION: Fields not empty =====
+        if (inputUser.isEmpty() || inputPass.isEmpty()) {
+            errorLabel.setText("Please enter both a username and a password.");
+            errorLabel.setStyle("-fx-text-fill: #e74c3c;");
+            return;
+        }
+
+        // ===== VALIDATION: Sanitize inputs =====
+        if (inputUser.length() > 50) {
+            errorLabel.setText("Your username is too long (max 50 characters)!");
+            errorLabel.setStyle("-fx-text-fill: #e74c3c;");
+            usernameField.clear();
+            passwordField.clear();
+            return;
+        }
+
+        User loggedInUser = loginDAO.verifyLogin(inputUser, inputPass);
 
         if (loggedInUser != null) {
             try {
-                // Check the role and deploy the correct scene
                 if (loggedInUser.isAdmin()) {
-                    System.out.println("Tactical Auth: Admin Access Granted.");
-                    switchToDash(event);
+                    System.out.println("Admin access granted.");
+                    switchToDash(event, loggedInUser);
                 } else {
-                    System.out.println("Tactical Auth: Customer Access Granted.");
-                    switchToMenu(event);
+                    System.out.println("Customer access granted.");
+                    switchToMenu(event, loggedInUser);
                 }
             } catch (IOException e) {
-                errorLabel.setText("System Error: View not found.");
+                errorLabel.setText("System error: view not found.");
+                errorLabel.setStyle("-fx-text-fill: #e74c3c;");
                 e.printStackTrace();
             }
         } else {
-            // This is what you're seeing now because the DAO might be returning null
-            errorLabel.setText("Invalid credentials");
+            errorLabel.setText("Invalid username or password. Maybe you spelt something wrong?");
+            errorLabel.setStyle("-fx-text-fill: #e74c3c;");
+            usernameField.clear();
+            passwordField.clear();
+            usernameField.requestFocus();
         }
     }
 
-    private void switchToMenu(ActionEvent event) throws IOException {
-        // load the fxml
+    private void switchToMenu(ActionEvent event, User user) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/menuView.fxml"));
-
-        // get stage after button click event
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-        // create new scene
         Scene scene = new Scene(loader.load(), 1024, 700);
+
+        MenuController menuController = loader.getController();
+        menuController.setLoggedInUser(user);
+
         stage.setScene(scene);
-        stage.setTitle("Camo-Gear Bistro | Menu");
+        stage.setTitle("Camogear Bistro (Menu)");
         stage.show();
     }
 
-    private void switchToDash(ActionEvent event) throws IOException {
-        // load the fxml
+    private void switchToDash(ActionEvent event, User user) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashView.fxml"));
-
-        // get stage after button click event
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-        // create new scene
         Scene scene = new Scene(loader.load(), 1024, 700);
+
+        DashController dashController = loader.getController();
+        dashController.setLoggedInUser(user);
+
         stage.setScene(scene);
-        stage.setTitle("Camo-Gear Bistro | Admin Dashboard");
+        stage.setTitle("Camogear Bistro (Admin Dashboard)");
         stage.show();
     }
 
-}
+    @FXML
+    private void onLoginButtonHover() {
+        loginBtn.setStyle("-fx-cursor: hand;");
+    }
 
+    @FXML
+    private void onLoginButtonExit() {
+        loginBtn.setStyle("-fx-cursor: hand;");
+    }
+
+    @FXML
+    private void handleShowRegister(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/registerView.fxml"));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(loader.load(), 400, 550);
+        stage.setScene(scene);
+        stage.setTitle("Camogear Bistro (Registration Window)");
+        stage.show();
+    }
+}

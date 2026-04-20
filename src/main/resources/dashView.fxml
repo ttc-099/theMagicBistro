@@ -1,52 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
 <BorderPane prefHeight="700.0" prefWidth="1024.0"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.files.projBistro.controllers.DashController">
+            fx:controller="com.files.projBistro.controllers.DashController"
+            style="-fx-background-color: #f5f5f5;">
+    <padding>
+        <Insets top="16" right="16" bottom="16" left="16" />
+    </padding>
 
+    <!-- left sidebar -->
     <left>
-        <VBox spacing="20" prefWidth="250" style="-fx-background-color: #1a1a1a; -fx-padding: 20;">
-            <Label text="ADMIN PANEL" style="-fx-text-fill: #00ff00; -fx-font-weight: bold; -fx-font-size: 18;" />
+        <VBox spacing="25" prefWidth="260"
+              style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8;">
+            <padding>
+                <Insets top="25" right="15" bottom="25" left="15" />
+            </padding>
 
-            <HBox spacing="10" alignment="CENTER_LEFT" onMouseClicked="#showMenuManagement" style="-fx-cursor: hand;">
-                <ImageView fitHeight="30" fitWidth="30">
-                    <Image url="@dashMedia/placeholder.png" />
-                </ImageView>
-                <Label text="Inventory / Menu" style="-fx-text-fill: white;" />
-            </HBox>
+            <Label text="🎮 ADMIN DASHBOARD" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
 
-            <HBox spacing="10" alignment="CENTER_LEFT" onMouseClicked="#showOrders" style="-fx-cursor: hand;">
-                <ImageView fitHeight="30" fitWidth="30">
-                    <Image url="@dashMedia/placeholder.png" />
-                </ImageView>
-                <Label text="Active Orders" style="-fx-text-fill: white;" />
-            </HBox>
+            <Separator />
 
-            <HBox spacing="10" alignment="CENTER_LEFT" onMouseClicked="#showStockAlerts" style="-fx-cursor: hand;">
-                <ImageView fitHeight="30" fitWidth="30">
-                    <Image url="@dashMedia/placeholder.png" />
-                </ImageView>
-                <Label text="Low Stock (Ammo)" style="-fx-text-fill: white;" />
-            </HBox>
+            <VBox spacing="5">
+                <Label text="NAVIGATION" style="-fx-font-weight: bold; -fx-text-fill: #7f8c8d; -fx-font-size: 11px;" />
+
+                <HBox fx:id="inventoryMenuItem" spacing="12" alignment="CENTER_LEFT" onMouseClicked="#showMenuManagement"
+                      style="-fx-padding: 10 15 10 15; -fx-background-radius: 8; -fx-cursor: hand;">
+                    <ImageView fitHeight="24" fitWidth="24">
+                        <Image url="@dashMedia/inventory.jpg" />
+                    </ImageView>
+                    <Label fx:id="inventoryLabel" text="Inventory &amp; Menu" style="-fx-text-fill: #2c3e50; -fx-font-size: 14px;" />
+                </HBox>
+
+                <HBox fx:id="ordersMenuItem" spacing="12" alignment="CENTER_LEFT" onMouseClicked="#showOrders"
+                      style="-fx-padding: 10 15 10 15; -fx-background-radius: 8; -fx-cursor: hand;">
+                    <ImageView fitHeight="24" fitWidth="24">
+                        <Image url="@dashMedia/activeOrders.png" />
+                    </ImageView>
+                    <Label fx:id="ordersLabel" text="Active Orders" style="-fx-text-fill: #2c3e50; -fx-font-size: 14px;" />
+                </HBox>
+
+                <HBox fx:id="stockMenuItem" spacing="12" alignment="CENTER_LEFT" onMouseClicked="#showStockAlerts"
+                      style="-fx-padding: 10 15 10 15; -fx-background-radius: 8; -fx-cursor: hand;">
+                    <ImageView fitHeight="24" fitWidth="24">
+                        <Image url="@dashMedia/lowStocks.png" />
+                    </ImageView>
+                    <Label fx:id="stockLabel" text="Low Stock Alerts" style="-fx-text-fill: #2c3e50; -fx-font-size: 14px;" />
+                </HBox>
+            </VBox>
 
             <Region VBox.vgrow="ALWAYS" />
 
-            <Button text="LOGOUT" onAction="#handleLogout" prefWidth="200" style="-fx-background-color: #444; -fx-text-fill: white;" />
+            <Separator />
+
+            <Button text="🚪 LOGOUT" onAction="#handleLogout" prefWidth="200"
+                    style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
         </VBox>
     </left>
 
+    <!-- center content area - changed from StackPane to VBox so content expands properly -->
     <center>
-        <StackPane fx:id="contentArea" style="-fx-background-color: #2b2b2b;">
-            <VBox alignment="CENTER" spacing="20">
-                <Label text="Welcome back, Commander." style="-fx-text-fill: gray; -fx-font-size: 24;" />
-                <Label fx:id="statusLabel" text="Select a mission from the left sidebar." style="-fx-text-fill: #666;" />
+        <VBox fx:id="contentArea" VBox.vgrow="ALWAYS"
+              style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8;">
+            <VBox alignment="CENTER" spacing="15" VBox.vgrow="ALWAYS">
+                <Label text="👋 Welcome back, Commander." style="-fx-font-size: 24px; -fx-text-fill: #2c3e50;" />
+                <Label fx:id="statusLabel" text="Select a mission from the left sidebar."
+                       style="-fx-text-fill: #7f8c8d; -fx-font-size: 14px;" />
             </VBox>
-        </StackPane>
+        </VBox>
     </center>
-
 </BorderPane>

@@ -56,6 +56,11 @@ public class populateDB {
                 pstmt.setString(2, "/images/metsu.png");
                 pstmt.setString(3, "#4B0082");
                 pstmt.executeUpdate();
+
+                pstmt.setString(1, "Laniard");
+                pstmt.setString(2, "/images/laniard.png");
+                pstmt.setString(3, "#808080");
+                pstmt.executeUpdate();
             }
 
             // 3. Seed DIALOGUE

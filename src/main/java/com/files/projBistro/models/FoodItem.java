@@ -7,12 +7,16 @@ public class FoodItem {
     private double price;
     private int stock;
     private String itemType;
+    private String description;
 
     // used to identify who's menu (e.g., Chloe, Mimi)
     private String charCategory;
 
     // store the string path for the menu image
     private String imagePath;
+
+    // whether the item is visible to customers (soft delete)
+    private boolean isActive;
 
     // 1a. private constructor
     // only accessible via the Builder
@@ -23,7 +27,9 @@ public class FoodItem {
         this.stock = builder.stock;
         this.charCategory = builder.charCategory;
         this.itemType = builder.itemType;
+        this.description = builder.description;
         this.imagePath = builder.imagePath;
+        this.isActive = builder.isActive;
     }
 
     // 1b. display method (CRITICAL)
@@ -39,8 +45,13 @@ public class FoodItem {
     public double getPrice() { return price; }
     public int getStock() { return stock; }
     public String getItemType() { return itemType; }
+    public String getDescription() { return description; }
     public String getCharCategory() { return charCategory; }
     public String getImagePath() { return imagePath; }
+    public boolean isActive() { return isActive; }
+
+    // setter for isActive (needed for toggle)
+    public void setActive(boolean active) { isActive = active; }
     // -----------------------
 
     // 1d. static builder class
@@ -52,7 +63,9 @@ public class FoodItem {
         private int stock = 0;
         private String charCategory;
         private String itemType = "Food";
+        private String description;
         private String imagePath;
+        private boolean isActive = true;  // default to active
 
         public FoodItemBuilder setId(int id) {
             this.id = id;
@@ -84,8 +97,18 @@ public class FoodItem {
             return this;
         }
 
+        public FoodItemBuilder setDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
         public FoodItemBuilder setImagePath(String imagePath) {
             this.imagePath = imagePath;
+            return this;
+        }
+
+        public FoodItemBuilder setIsActive(boolean isActive) {
+            this.isActive = isActive;
             return this;
         }
 
