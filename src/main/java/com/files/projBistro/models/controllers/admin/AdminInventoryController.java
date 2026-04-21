@@ -1,16 +1,14 @@
-package com.files.projBistro.controllers.admin;
+package com.files.projBistro.models.controllers.admin;
 
-import com.files.projBistro.models.FoodItem;
+import com.files.projBistro.models.models.FoodItem;
 import com.files.projBistro.models.dao.AdminDAO;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 

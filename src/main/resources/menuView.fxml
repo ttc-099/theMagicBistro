@@ -9,7 +9,7 @@
 <BorderPane prefHeight="700.0" prefWidth="1024.0"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.files.projBistro.controllers.MenuController">
+            fx:controller="com.files.projBistro.models.controllers.MenuController">
     <padding>
         <Insets top="16" right="16" bottom="16" left="16" />
     </padding>

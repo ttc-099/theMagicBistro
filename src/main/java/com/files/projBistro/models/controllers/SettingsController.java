@@ -1,6 +1,7 @@
-package com.files.projBistro.controllers;
+package com.files.projBistro.models.controllers;
 
-import com.files.projBistro.models.ThemeManager;
+import com.files.projBistro.models.models.ThemeManager;
+import com.files.projBistro.models.userModel.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -16,9 +17,9 @@ public class SettingsController {
     @FXML private VBox settingsRoot;
     @FXML private ToggleButton themeToggle;
 
-    private com.files.projBistro.models.userModel.User loggedInUser;
+    private User loggedInUser;
 
-    public void setLoggedInUser(com.files.projBistro.models.userModel.User user) {
+    public void setLoggedInUser(User user) {
         this.loggedInUser = user;
     }
 

@@ -1,4 +1,4 @@
-package com.files.projBistro.controllers;
+package com.files.projBistro.models.controllers;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;

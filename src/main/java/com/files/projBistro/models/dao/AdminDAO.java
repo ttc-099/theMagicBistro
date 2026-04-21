@@ -1,7 +1,7 @@
 package com.files.projBistro.models.dao;
 
-import com.files.projBistro.database.DatabaseConnection;
-import com.files.projBistro.models.FoodItem;
+import com.files.projBistro.models.database.DatabaseConnection;
+import com.files.projBistro.models.models.FoodItem;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;

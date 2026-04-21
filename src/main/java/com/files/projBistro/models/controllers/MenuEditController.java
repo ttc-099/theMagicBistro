@@ -1,6 +1,6 @@
-package com.files.projBistro.controllers;
+package com.files.projBistro.models.controllers;
 
-import com.files.projBistro.models.FoodItem;
+import com.files.projBistro.models.models.FoodItem;
 import com.files.projBistro.models.dao.AdminDAO;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;

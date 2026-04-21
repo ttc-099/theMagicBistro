@@ -1,6 +1,6 @@
-package com.files.projBistro.controllers;
+package com.files.projBistro.models.controllers;
 
-import com.files.projBistro.controllers.admin.AdminController;
+import com.files.projBistro.models.controllers.admin.AdminController;
 import com.files.projBistro.models.userModel.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -135,12 +135,21 @@ public class DashController {
 
     @FXML
     private void showMenuManagement() {
+
+        if (loggedInUser == null) {
+            statusLabel.setText("Error: No user logged in. Please log out and back in.");
+            return;
+        }
+
+        contentArea.setVisible(false);
+
         System.out.println("Loading adminView.fxml...");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/adminView.fxml"));
             Node node = loader.load();
 
             AdminController adminController = loader.getController();
+            adminController.setParentContentArea(contentArea);
             adminController.setLoggedInUser(loggedInUser);
 
             contentArea.getChildren().setAll(node);

@@ -1,10 +1,8 @@
-package com.files.projBistro.controllers;
+package com.files.projBistro.models.controllers;
 
-import com.files.projBistro.models.FoodItem;
+import com.files.projBistro.models.models.FoodItem;
 import com.files.projBistro.models.dao.AdminDAO;
 import com.files.projBistro.models.dao.DialogueDAO;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;

@@ -8,7 +8,7 @@
 <VBox spacing="15" prefHeight="700.0" prefWidth="1024.0"
       xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.files.projBistro.controllers.MenuEditController">
+      fx:controller="com.files.projBistro.models.controllers.MenuEditController">
 
     <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header-bar" style="-fx-padding: 15;">
         <Label text="MENU MANAGEMENT SYSTEM" styleClass="bold-text" style="-fx-font-size: 22;"/>

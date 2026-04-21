@@ -1,4 +1,4 @@
-package com.files.projBistro.database;
+package com.files.projBistro.models.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

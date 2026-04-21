@@ -1,6 +1,6 @@
 package com.files.projBistro.models.dao;
 
-import com.files.projBistro.database.DatabaseConnection;
+import com.files.projBistro.models.database.DatabaseConnection;
 import com.files.projBistro.models.userModel.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -78,4 +78,86 @@ public class LoginDAO {
             return false;
         }
     }
+
+    // Verify if a PIN belongs to ANY admin
+    public boolean verifyAdminPin(String pin) {
+        String sql = "SELECT user_id FROM users WHERE role = 'Admin' AND admin_pin = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, pin);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Get admin details by PIN (returns User object)
+    public User getAdminByPin(String pin) {
+        String sql = "SELECT user_id, username, role, phone_number FROM users WHERE role = 'Admin' AND admin_pin = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, pin);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("user_id"),
+                        rs.getString("username"),
+                        rs.getString("role"),
+                        rs.getString("phone_number")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Verify admin by username + password + PIN (most secure)
+    public User verifyFullAdminLogin(String username, String password, String pin) {
+        String sql = "SELECT user_id, username, role, phone_number FROM users WHERE role = 'Admin' AND username = ? AND password = ? AND admin_pin = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            pstmt.setString(3, pin);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("user_id"),
+                        rs.getString("username"),
+                        rs.getString("role"),
+                        rs.getString("phone_number")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Verify PIN for a SPECIFIC admin by username
+    public User verifyAdminByUsernameAndPin(String username, String pin) {
+        String sql = "SELECT user_id, username, role, phone_number FROM users WHERE role = 'Admin' AND username = ? AND admin_pin = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, pin);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("user_id"),
+                        rs.getString("username"),
+                        rs.getString("role"),
+                        rs.getString("phone_number")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 }

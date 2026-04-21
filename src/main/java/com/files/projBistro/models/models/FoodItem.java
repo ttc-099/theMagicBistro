@@ -1,4 +1,4 @@
-package com.files.projBistro.models;
+package com.files.projBistro.models.models;
 
 public class FoodItem {
     // 1. expected fields for every food unit

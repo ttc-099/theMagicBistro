@@ -7,7 +7,7 @@
 <VBox spacing="16" prefHeight="600.0" prefWidth="800.0"
       xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.files.projBistro.controllers.LowStockController"
+      fx:controller="com.files.projBistro.models.controllers.LowStockController"
       style="-fx-background-color: #f5f5f5;">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20" />

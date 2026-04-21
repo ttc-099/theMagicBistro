@@ -1,6 +1,6 @@
 package com.files.projBistro.models.dao;
 
-import com.files.projBistro.database.DatabaseConnection;
+import com.files.projBistro.models.database.DatabaseConnection;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;

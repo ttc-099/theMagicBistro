@@ -1,8 +1,8 @@
-package com.files.projBistro.controllers;
+package com.files.projBistro.models.controllers;
 
-import com.files.projBistro.models.FoodItem;
-import com.files.projBistro.models.Order;
-import com.files.projBistro.models.ThemeManager;
+import com.files.projBistro.models.models.FoodItem;
+import com.files.projBistro.models.models.Order;
+import com.files.projBistro.models.models.ThemeManager;
 import com.files.projBistro.models.dao.LoginDAO;
 import com.files.projBistro.models.dao.MenuDAO;
 import com.files.projBistro.models.dao.DialogueDAO;
@@ -292,6 +292,8 @@ public class MenuController {
         scrollPane.setFitToWidth(true);
         scrollPane.setPrefHeight(150);
         scrollPane.setMaxHeight(300);
+        scrollPane.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+        scrollPane.setPadding(Insets.EMPTY);
 
         // Image preview if available
         ImageView imageView = new ImageView();
@@ -404,12 +406,13 @@ public class MenuController {
             if (userId != -1) {
                 int orderId = orderDAO.saveOrder(currentOrder, userId);
                 if (orderId != -1) {
-                    playOrderSuccessSound();
+
 
                     // save invoice to txt file
                     saveInvoiceToFile(currentOrder, orderId);
 
                     showAlert("Order Submitted!", "Your order has been placed successfully!\n\nInvoice saved to your computer.");
+                    playOrderSuccessSound();
 
                     Random rand = new Random();
                     int charId = rand.nextInt(4) + 1;

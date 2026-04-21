@@ -1,7 +1,6 @@
 package com.files.projBistro.models.dao;
 
 import com.files.projBistro.models.userModel.User;
-import com.files.projBistro.models.userModel.Role;
 
 // this class is a simple wrapper/redirector for user-related database operations
 // it doesn't do the work itself - it just calls the logindao methods

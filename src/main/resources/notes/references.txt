@@ -1,0 +1,238 @@
+================================================================================
+                    CAMO-GEAR BISTRO - PROJECT REFERENCE
+================================================================================
+
+------ LOGIN SYSTEM ------------------------------------------------------------
+
+FILES:
+--> LoginController.java      (handles login logic)
+--> loginView.fxml            (login screen UI)
+--> LoginDAO.java             (database queries for users)
+--> User.java                 (user model object)
+--> Role.java                 (enum: ADMIN / CUSTOMER)
+
+HOW IT WORKS:
+1. User enters username + password
+2. LoginController calls --> LoginDAO.verifyLogin()
+3. LoginDAO queries --> users table in database
+4. If valid, returns --> User object with role
+5. If role = ADMIN --> go to DashController (Admin Dashboard)
+6. If role = CUSTOMER --> go to MenuController (Customer Menu)
+
+DATABASE TABLE: users
+- user_id (PK)
+- username (UNIQUE)
+- password
+- role ('Admin' or 'Customer')
+- phone_number
+
+FLOW:
+Login Screen --> [success] --> Check Role --> ADMIN --> Dashboard
+                                          --> CUSTOMER --> Menu
+
+
+------ CUSTOMER SIDE (Menu) ----------------------------------------------------
+
+FILES:
+--> MenuController.java       (main customer menu logic)
+--> menuView.fxml             (customer menu UI)
+--> MenuDAO.java              (fetches food items from database)
+--> FoodItem.java             (item model: name, price, stock, etc.)
+--> Order.java                (shopping cart model)
+--> OrderDAO.java             (saves orders to database)
+--> DialogueDAO.java          (fetches character dialogue lines)
+
+HOW IT WORKS:
+1. Menu loads items for 4 characters (Chloe, Mimi, Metsu, Laniard)
+2. User adds items to cart (Order object)
+3. User submits order --> OrderDAO.saveOrder()
+4. OrderDAO checks stock levels, reduces stock, saves to database
+5. Success --> Invoice saved as .txt file
+
+CHARACTER SYSTEM:
+Each character has their own tab in the menu
+Each character has dialogue for different triggers:
+
+TRIGGER TYPES:
+--> WELCOME        (when user opens their tab)
+--> ITEM_SELECTED  (when user adds item to cart)
+--> ORDER_COMPLETE (when user submits order)
+--> LOW_STOCK      (when admin views low stock alerts)
+
+DIALOGUE DATABASE TABLE: character_dialogue
+- dialogue_id (PK)
+- character_id (FK to characters table)
+- trigger_type (WELCOME, ITEM_SELECTED, ORDER_COMPLETE, LOW_STOCK)
+- dialogue_text
+
+CUSTOMER FLOW:
+Menu --> Browse Items --> Add to Cart --> Submit Order --> Save to DB --> Invoice
+
+
+------ ADMIN SIDE (Dashboard) -------------------------------------------------
+
+FILES:
+--> DashController.java       (main admin dashboard with sidebar)
+--> dashView.fxml             (dashboard UI with 3 menu items)
+--> AdminController.java      (full admin panel with 4 tabs)
+--> adminView.fxml            (admin panel UI)
+
+ADMIN PANEL TABS:
+1. INVENTORY MANAGEMENT    --> add/edit/delete food items
+2. CHARACTER DIALOGUE      --> add/edit/delete character dialogue lines
+3. SALES AND ANALYTICS     --> view sales reports, popular items, export
+4. MENU PREVIEW            --> preview how customers see the menu
+
+SUB-CONTROLLERS (AdminController delegates to these):
+--> AdminInventoryController.java   (handles food item CRUD)
+--> AdminDialogueController.java    (handles dialogue CRUD)
+--> AdminSalesController.java       (handles sales reporting)
+--> AdminPreviewController.java     (handles menu preview)
+
+ADMIN FLOW:
+Dashboard --> Click "Inventory & Menu" --> PIN (1234) --> Admin Panel
+
+
+------ ACTIVE ORDERS (Admin) --------------------------------------------------
+
+FILES:
+--> ActiveOrdersController.java  (shows pending orders)
+--> activeOrdersView.fxml        (UI with ListView of orders)
+--> OrderDAO.java                (fetches orders from database)
+
+HOW IT WORKS:
+1. Shows only orders with status = 'pending'
+2. Each order card shows: order #, customer, phone, total, date, items
+3. Admin can Complete (status --> 'completed') or Cancel (status --> 'cancelled')
+
+DATABASE TABLES:
+--> orders        (order_id, user_id, total_price, status, order_date)
+--> order_items   (order_id, item_id, quantity, price_at_purchase)
+
+
+------ LOW STOCK ALERTS (Admin) -----------------------------------------------
+
+FILES:
+--> LowStockController.java   (shows items with stock ≤ 20)
+--> lowStockView.fxml         (table view of low stock items)
+--> AdminDAO.java             (fetches/updates items)
+--> DialogueDAO.java          (shows character dialogue in alert)
+
+HOW IT WORKS:
+1. Fetches all items with stock ≤ 20
+2. Shows alert with random character saying a LOW_STOCK dialogue
+3. Admin can restock items (enter new stock quantity)
+
+THRESHOLD: LOW_STOCK_THRESHOLD = 20 (in LowStockController.java)
+
+
+------ THEME SYSTEM (Light/Dark) ----------------------------------------------
+
+FILES:
+--> ThemeManager.java         (singleton that stores current theme)
+--> SettingsController.java   (UI for toggling theme)
+--> settingsView.fxml         (settings window)
+--> light.css                 (light mode styles)
+--> dark.css                  (dark mode styles)
+
+HOW IT WORKS:
+1. User clicks Settings button in Menu
+2. SettingsController shows toggle button
+3. When toggled, calls --> ThemeManager.setTheme()
+4. ThemeManager.applyToScene() removes old CSS and adds new one
+
+IMPORTANT: Admin panel does NOT use themes (uses JavaFX default styling)
+--> LoginController.switchToDash() does NOT call ThemeManager.applyToScene()
+
+
+------ DATABASE LAYER ---------------------------------------------------------
+
+FILES:
+--> DatabaseConnection.java   (singleton for SQLite connection)
+--> setUpDB.java              (creates tables if they don't exist)
+--> populateDB.java           (seeds initial data)
+
+DATABASE TABLES (6 tables):
+1. users           --> login accounts
+2. characters      --> Chloe, Mimi, Metsu, Laniard
+3. character_dialogue --> dialogue lines for characters
+4. food_items      --> menu items (name, price, stock, character_id, is_active)
+5. orders          --> customer orders
+6. order_items     --> items in each order
+
+DATABASE LOCATION: bistroTrue.db (in project root folder)
+
+
+------ DEPENDENCIES -----------------------------------------------------------
+
+JavaFX modules required (in module-info.java):
+--> javafx.controls
+--> javafx.fxml
+--> java.sql
+--> javafx.media
+
+Database:
+--> SQLite (no external server needed)
+
+
+------ QUICK FILE REFERENCE ---------------------------------------------------
+
+WHERE TO FIND THINGS:
+
+CONTROLLERS:
+├── LoginController.java
+├── RegisterController.java
+├── MenuController.java
+├── SettingsController.java
+├── DashController.java
+├── ActiveOrdersController.java
+├── LowStockController.java
+└── admin/
+    ├── AdminController.java
+    ├── AdminInventoryController.java
+    ├── AdminDialogueController.java
+    ├── AdminSalesController.java
+    └── AdminPreviewController.java
+
+MODELS:
+├── FoodItem.java
+├── Order.java
+├── ThemeManager.java
+└── userModel/
+    ├── User.java
+    └── Role.java
+
+DAOS (Database Access Objects):
+├── LoginDAO.java
+├── AdminDAO.java
+├── MenuDAO.java
+├── OrderDAO.java
+├── SalesDAO.java
+└── DialogueDAO.java
+
+DATABASE:
+├── DatabaseConnection.java
+├── setUpDB.java
+└── populateDB.java
+
+FXML FILES (UI):
+├── loginView.fxml
+├── registerView.fxml
+├── menuView.fxml
+├── settingsView.fxml
+├── dashView.fxml
+├── activeOrdersView.fxml
+├── lowStockView.fxml
+├── adminView.fxml
+└── menuEditView.fxml (UNUSED)
+
+CSS FILES:
+├── light.css
+├── dark.css
+└── dashboard.css
+
+RESOURCES:
+├── /audio/          --> tap1.mp3, tap2.mp3, orderSuccess.mp3
+├── /icons/          --> character images (Chloe, Mimi, Metsu, Laniard)
+├── /images/         --> food item images
+└── /dashMedia/      --> dashboard sidebar icons

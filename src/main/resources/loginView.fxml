@@ -15,7 +15,7 @@
 <!-- stack pane centers everything -->
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           fx:controller="com.files.projBistro.controllers.LoginController">
+           fx:controller="com.files.projBistro.models.controllers.LoginController">
 
     <!-- main vertical box containing all login elements -->
     <VBox alignment="CENTER" spacing="20"

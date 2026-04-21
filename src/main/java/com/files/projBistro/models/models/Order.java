@@ -1,4 +1,4 @@
-package com.files.projBistro.models;
+package com.files.projBistro.models.models;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

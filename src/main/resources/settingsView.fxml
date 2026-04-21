@@ -5,7 +5,7 @@
 
 <VBox fx:id="settingsRoot" spacing="20" alignment="CENTER" prefHeight="400.0" prefWidth="450.0"
       xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.files.projBistro.controllers.SettingsController">
+      fx:controller="com.files.projBistro.models.controllers.SettingsController">
     <padding>
         <Insets top="30" right="30" bottom="30" left="30" />
     </padding>

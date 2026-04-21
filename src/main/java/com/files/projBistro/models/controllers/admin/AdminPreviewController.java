@@ -1,6 +1,6 @@
-package com.files.projBistro.controllers.admin;
+package com.files.projBistro.models.controllers.admin;
 
-import com.files.projBistro.models.FoodItem;
+import com.files.projBistro.models.models.FoodItem;
 import com.files.projBistro.models.dao.AdminDAO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

@@ -1,6 +1,6 @@
-package com.files.projBistro;
+package com.files.projBistro.models;
 
-import com.files.projBistro.database.setUpDB;
+import com.files.projBistro.models.database.setUpDB;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

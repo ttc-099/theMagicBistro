@@ -7,7 +7,7 @@
 <BorderPane prefHeight="700.0" prefWidth="1024.0"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.files.projBistro.controllers.DashController"
+            fx:controller="com.files.projBistro.models.controllers.DashController"
             style="-fx-background-color: #f5f5f5;">
     <padding>
         <Insets top="16" right="16" bottom="16" left="16" />

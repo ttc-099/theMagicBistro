@@ -1,6 +1,6 @@
-package com.files.projBistro.controllers.admin;
+package com.files.projBistro.models.controllers.admin;
 
-import com.files.projBistro.models.Order;
+import com.files.projBistro.models.models.Order;
 import com.files.projBistro.models.dao.SalesDAO;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
@@ -195,59 +195,64 @@ public class AdminSalesController {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Export sales report");
-        fileChooser.setInitialFileName("sales_report_" + LocalDate.now() + ".txt");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*.txt"));
+        fileChooser.setInitialFileName("sales_report_" + LocalDate.now() + ".csv");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV files", "*.csv"));
 
         File file = fileChooser.showSaveDialog(startDatePicker.getScene().getWindow());
         if (file != null) {
             try (PrintWriter writer = new PrintWriter(file)) {
-                writer.println("==================================================");
-                writer.println("           CAMO-GEAR BISTRO");
-                writer.println("           SALES REPORT");
-                writer.println("==================================================");
+                // Write summary section
+                writer.println("CAMO-GEAR BISTRO - SALES REPORT");
+                writer.println("Generated: " + LocalDate.now());
+                writer.println("Date Range: " + (startDate != null ? startDate : "Beginning") + " to " + (endDate != null ? endDate : "Today"));
                 writer.println();
-                writer.println("DATE RANGE:");
-                String range = (startDate != null ? startDate : "Beginning") + " to " + (endDate != null ? endDate : "Today");
-                writer.println("  " + range);
-                writer.println();
-                writer.println("--------------------------------------------------");
+
                 writer.println("KEY METRICS");
-                writer.println("--------------------------------------------------");
-                writer.printf("  %-20s £%9.2f%n", "Total Revenue:", summary.getTotalRevenue());
-                writer.printf("  %-20s %9d%n", "Total Orders:", summary.getTotalOrders());
-                writer.printf("  %-20s %9d%n", "Total Items Sold:", summary.getTotalItemsSold());
-                writer.printf("  %-20s £%9.2f%n", "Average Order:", summary.getAvgOrderValue());
+                writer.println("Metric,Value");
+                writer.printf("Total Revenue,%.2f%n", summary.getTotalRevenue());
+                writer.printf("Total Orders,%d%n", summary.getTotalOrders());
+                writer.printf("Total Items Sold,%d%n", summary.getTotalItemsSold());
+                writer.printf("Average Order Value,%.2f%n", summary.getAvgOrderValue());
                 writer.println();
-                writer.println("--------------------------------------------------");
+
+                // Popular items section
                 writer.println("MOST POPULAR ITEMS");
-                writer.println("--------------------------------------------------");
-                writer.printf("  %-30s %12s %12s%n", "Item Name", "Times Ordered", "Revenue");
-                writer.println("  " + "-".repeat(54));
+                writer.println("Item Name,Times Ordered,Revenue");
                 for (SalesDAO.PopularItem item : popularItems) {
-                    String name = item.getName();
-                    if (name.length() > 28) name = name.substring(0, 25) + "...";
-                    writer.printf("  %-30s %12d £%10.2f%n", name, item.getTimesOrdered(), item.getRevenue());
+                    writer.printf("\"%s\",%d,%.2f%n",
+                            escapeCsv(item.getName()),
+                            item.getTimesOrdered(),
+                            item.getRevenue());
                 }
                 writer.println();
-                writer.println("--------------------------------------------------");
+
+                // Recent orders section
                 writer.println("RECENT ORDERS");
-                writer.println("--------------------------------------------------");
-                writer.printf("  %-8s %-20s %10s %-20s%n", "Order #", "Customer", "Total", "Date");
-                writer.println("  " + "-".repeat(62));
+                writer.println("Order ID,Customer Name,Total,Date,Status");
                 for (Order o : recentOrders) {
-                    String date = o.getOrderDate() != null ? o.getOrderDate().toString() : "Unknown";
                     String customer = o.getCustomerName() != null ? o.getCustomerName() : "Guest";
-                    if (customer.length() > 18) customer = customer.substring(0, 15) + "...";
-                    writer.printf("  %-8d %-20s £%9.2f %-20s%n", o.getOrderId(), customer, o.getTotalPrice(), date);
+                    String date = o.getOrderDate() != null ? o.getOrderDate().toString() : "Unknown";
+                    writer.printf("%d,\"%s\",%.2f,%s,%s%n",
+                            o.getOrderId(),
+                            escapeCsv(customer),
+                            o.getTotalPrice(),
+                            date,
+                            o.getStatus());
                 }
-                writer.println();
-                writer.println("==================================================");
-                writer.println("Report generated: " + LocalDate.now());
-                writer.println("==================================================");
-                showStatus.accept("Sales report exported to TXT!");
+
+                showStatus.accept("Sales report exported to CSV!");
             } catch (IOException e) {
                 showStatus.accept("Export failed: " + e.getMessage());
             }
         }
+    }
+
+    // Helper method to escape CSV fields (wrap in quotes if contains comma or quote)
+    private String escapeCsv(String value) {
+        if (value == null) return "";
+        if (value.contains(",") || value.contains("\"")) {
+            return value.replace("\"", "\"\"");
+        }
+        return value;
     }
 }

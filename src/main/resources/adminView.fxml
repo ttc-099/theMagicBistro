@@ -8,7 +8,7 @@
 <VBox spacing="20" prefHeight="700.0" prefWidth="1024.0"
       xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.files.projBistro.controllers.admin.AdminController"
+      fx:controller="com.files.projBistro.models.controllers.admin.AdminController"
       style="-fx-background-color: #f5f5f5;">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20" />

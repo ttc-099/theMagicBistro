@@ -1,6 +1,6 @@
-package com.files.projBistro.controllers;
+package com.files.projBistro.models.controllers;
 
-import com.files.projBistro.models.ThemeManager;
+import com.files.projBistro.models.models.ThemeManager;
 import com.files.projBistro.models.dao.LoginDAO;
 import com.files.projBistro.models.userModel.User;
 import javafx.fxml.FXML;
@@ -37,8 +37,8 @@ public class LoginController {
         if (inputUser.length() > 50) {
             errorLabel.setText("Your username is too long (max 50 characters)!");
             errorLabel.setStyle("-fx-text-fill: #e74c3c;");
-            usernameField.clear();
-            passwordField.clear();
+
+            usernameField.requestFocus();
             return;
         }
 
@@ -61,9 +61,9 @@ public class LoginController {
         } else {
             errorLabel.setText("Invalid username or password.");
             errorLabel.setStyle("-fx-text-fill: #e74c3c;");
-            usernameField.clear();
-            passwordField.clear();
             usernameField.requestFocus();
+
+            passwordField.clear();
         }
     }
 
@@ -109,7 +109,7 @@ public class LoginController {
     private void handleShowRegister(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/registerView.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(loader.load(), 400, 550);
+        Scene scene = new Scene(loader.load(), 400, 590);
         stage.setScene(scene);
         stage.setTitle("Camogear Bistro (Registration Window)");
         stage.show();

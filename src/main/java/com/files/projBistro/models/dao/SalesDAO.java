@@ -1,10 +1,8 @@
 package com.files.projBistro.models.dao;
 
-import com.files.projBistro.database.DatabaseConnection;
-import com.files.projBistro.models.Order;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
+import com.files.projBistro.models.database.DatabaseConnection;
+import com.files.projBistro.models.models.Order;
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,7 +13,7 @@ import java.util.List;
 public class SalesDAO {
 
     // helper method to get a database connection
-    private Connection getConnection() {
+    protected Connection getConnection() {
         return DatabaseConnection.getInstance().getConnection();
     }
 

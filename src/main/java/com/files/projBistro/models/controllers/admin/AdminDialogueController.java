@@ -1,4 +1,4 @@
-package com.files.projBistro.controllers.admin;
+package com.files.projBistro.models.controllers.admin;
 
 import com.files.projBistro.models.dao.AdminDAO;
 import com.files.projBistro.models.dao.DialogueDAO;

@@ -1,9 +1,14 @@
-package com.files.projBistro.controllers.admin;
+package com.files.projBistro.models.controllers.admin;
 
-import com.files.projBistro.controllers.MenuController;
+import com.files.projBistro.models.controllers.DashController;
+import com.files.projBistro.models.dao.LoginDAO;
+import com.files.projBistro.models.models.FoodItem;
+import com.files.projBistro.models.models.Order;
+import com.files.projBistro.models.controllers.MenuController;
 import com.files.projBistro.models.dao.AdminDAO;
 import com.files.projBistro.models.dao.DialogueDAO;
 import com.files.projBistro.models.dao.SalesDAO;
+import com.files.projBistro.models.userModel.User;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -11,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -22,13 +28,13 @@ public class AdminController {
     @FXML private Label statusLabel;
 
     // inventory tab
-    @FXML private TableView<com.files.projBistro.models.FoodItem> inventoryTable;
-    @FXML private TableColumn<com.files.projBistro.models.FoodItem, Integer> colId;
-    @FXML private TableColumn<com.files.projBistro.models.FoodItem, String> colName;
-    @FXML private TableColumn<com.files.projBistro.models.FoodItem, Double> colPrice;
-    @FXML private TableColumn<com.files.projBistro.models.FoodItem, Integer> colStock;
-    @FXML private TableColumn<com.files.projBistro.models.FoodItem, String> colCategory;
-    @FXML private TableColumn<com.files.projBistro.models.FoodItem, Void> colActive;
+    @FXML private TableView<FoodItem> inventoryTable;
+    @FXML private TableColumn<FoodItem, Integer> colId;
+    @FXML private TableColumn<FoodItem, String> colName;
+    @FXML private TableColumn<FoodItem, Double> colPrice;
+    @FXML private TableColumn<FoodItem, Integer> colStock;
+    @FXML private TableColumn<FoodItem, String> colCategory;
+    @FXML private TableColumn<FoodItem, Void> colActive;
     @FXML private TextField nameInput;
     @FXML private TextField priceInput;
     @FXML private TextField stockInput;
@@ -61,12 +67,14 @@ public class AdminController {
     @FXML private TextField maxPriceFilter;
     @FXML private Button applyFiltersBtn;
     @FXML private ListView<SalesDAO.PopularItem> popularItemsList;
-    @FXML private TableView<com.files.projBistro.models.Order> recentOrdersTable;
-    @FXML private TableColumn<com.files.projBistro.models.Order, Integer> colOrderIdSales;
-    @FXML private TableColumn<com.files.projBistro.models.Order, String> colCustomerName;
-    @FXML private TableColumn<com.files.projBistro.models.Order, Double> colOrderTotal;
-    @FXML private TableColumn<com.files.projBistro.models.Order, String> colOrderDate;
-    @FXML private TableColumn<com.files.projBistro.models.Order, String> colOrderStatus;
+    @FXML private TableView<Order> recentOrdersTable;
+    @FXML private TableColumn<Order, Integer> colOrderIdSales;
+    @FXML private TableColumn<Order, String> colCustomerName;
+    @FXML private TableColumn<Order, Double> colOrderTotal;
+    @FXML private TableColumn<Order, String> colOrderDate;
+    @FXML private TableColumn<Order, String> colOrderStatus;
+
+    private VBox parentContentArea;
 
     // preview tab
     @FXML private TabPane previewTabPane;
@@ -74,15 +82,16 @@ public class AdminController {
     private AdminDAO adminDAO = new AdminDAO();
     private DialogueDAO dialogueDAO = new DialogueDAO();
     private SalesDAO salesDAO = new SalesDAO();
-    private final String MASTER_PIN = "1234";
     private boolean isAuthorizedForSession = false;
+    private LoginDAO loginDAO = new LoginDAO();
+    private User currentAdmin;  // Store which admin is logged in
 
     private AdminInventoryController inventoryController;
     private AdminDialogueController dialogueController;
     private AdminSalesController salesController;
     private AdminPreviewController previewController;
 
-    private com.files.projBistro.models.userModel.User loggedInUser;
+    private User loggedInUser;
 
     // ===== FIXED: PauseTransition for status messages (no thread spawning) =====
     private PauseTransition currentStatusTimer = null;
@@ -118,10 +127,6 @@ public class AdminController {
 
     @FXML
     public void initialize() {
-        if (!checkAuthorizationOnEntry()) {
-            goBackToDashboard();
-            return;
-        }
 
         inventoryController = new AdminInventoryController();
         inventoryController.init(adminDAO, statusLabel, msg -> showTemporaryStatus(msg, "green"), this::isAuthorizedForSession);
@@ -152,22 +157,54 @@ public class AdminController {
 
     }
 
+
     private boolean checkAuthorizationOnEntry() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Security Clearance");
-        dialog.setHeaderText("Admin Access Required.");
-        dialog.setContentText("Enter 4-digit PIN to access the admin panel:");
+        String adminUsername = loggedInUser.getUsername();
 
-        Optional<String> result = dialog.showAndWait();
-        boolean authorized = result.isPresent() && result.get().equals(MASTER_PIN);
+        while (true) {
+            TextInputDialog pinDialog = new TextInputDialog();
+            pinDialog.setTitle("Security Clearance");
+            pinDialog.setHeaderText("Enter your admin PIN, " + adminUsername);
+            pinDialog.setContentText("Enter your 4-digit PIN to access the admin panel:");
 
-        if (authorized) {
-            isAuthorizedForSession = true;
-            showTemporaryStatus("Access granted. Welcome, admin.", "green");
-        } else {
-            showTemporaryStatus("Access denied. Incorrect PIN.", "red");
+            Optional<String> result = pinDialog.showAndWait();
+
+            if (result.isEmpty()) {
+                showTemporaryStatus("Access cancelled.", "orange");
+                if (parentContentArea != null) parentContentArea.setVisible(false);
+                return false;
+            }
+
+            String enteredPin = result.get().trim();
+
+            // Validate 4 digits
+            if (!enteredPin.matches("\\d{4}")) {
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle("Invalid PIN");
+                errorAlert.setHeaderText("PIN must be exactly 4 digits (0-9 only).");
+                errorAlert.setContentText("You entered: " + enteredPin);
+                errorAlert.showAndWait();
+                continue;  // Loop again
+            }
+
+            User verifiedAdmin = loginDAO.verifyAdminByUsernameAndPin(adminUsername, enteredPin);
+
+            if (verifiedAdmin != null) {
+                isAuthorizedForSession = true;
+                currentAdmin = verifiedAdmin;
+                showTemporaryStatus("Access granted. Welcome, " + currentAdmin.getUsername() + "!", "green");
+                if (parentContentArea != null) parentContentArea.setVisible(true);
+                return true;
+            } else {
+                // Wrong PIN
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle("Access Denied");
+                errorAlert.setHeaderText("Incorrect PIN for " + adminUsername);
+                errorAlert.setContentText("That's not right. Try again?");
+                errorAlert.showAndWait();
+                // Continue loop (no need to set isAuthorizedForSession false here, it's already false)
+            }
         }
-        return authorized;
     }
 
     private boolean isAuthorizedForSession() {
@@ -179,6 +216,12 @@ public class AdminController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashView.fxml"));
                 Scene scene = new Scene(loader.load(), 1024, 700);
+
+                DashController dashController = loader.getController();
+                if (loggedInUser != null) {
+                    dashController.setLoggedInUser(loggedInUser);
+                }
+
                 Stage stage = (Stage) statusLabel.getScene().getWindow();
                 stage.setScene(scene);
                 stage.setTitle("Camo-Gear Bistro | Admin Dashboard");
@@ -189,8 +232,18 @@ public class AdminController {
         });
     }
 
-    public void setLoggedInUser(com.files.projBistro.models.userModel.User user) {
-        this.loggedInUser = user;
+    public void setLoggedInUser(User user) {
+        this.loggedInUser = user;  // ✅ Set FIRST
+
+        isAuthorizedForSession = false;
+
+        if (!checkAuthorizationOnEntry()) {
+            goBackToDashboard();
+        }
+    }
+
+    public void setParentContentArea(VBox contentArea) {
+        this.parentContentArea = contentArea;
     }
 
     @FXML private void handleAddItemPopup() { inventoryController.handleAddItemPopup(); }
