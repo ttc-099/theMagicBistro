@@ -60,6 +60,55 @@ public class MenuController {
     private final DialogueDAO dialogueDAO = new DialogueDAO();
     private final Random random = new Random();
 
+    private boolean showPaymentDialog() {
+        Dialog<String> paymentDialog = new Dialog<>();
+        paymentDialog.setTitle("Payment Method");
+        paymentDialog.setHeaderText("Select Payment Method");
+
+        // Set the button types
+        ButtonType confirmButton = new ButtonType("Confirm Order", ButtonBar.ButtonData.OK_DONE);
+        paymentDialog.getDialogPane().getButtonTypes().addAll(confirmButton, ButtonType.CANCEL);
+
+        // Create content
+        VBox content = new VBox(15);
+        content.setPadding(new Insets(20));
+        content.setPrefWidth(350);
+
+        Label instructionLabel = new Label("Please select your payment method:");
+        instructionLabel.setStyle("-fx-font-weight: bold;");
+
+        // Only one option - Pay At Counter
+        RadioButton payAtCounter = new RadioButton("Pay At Counter");
+        payAtCounter.setSelected(true);
+        payAtCounter.setDisable(true); // Disabled because it's the only option
+
+        ToggleGroup paymentGroup = new ToggleGroup();
+        payAtCounter.setToggleGroup(paymentGroup);
+
+        VBox optionsBox = new VBox(10);
+        optionsBox.getChildren().addAll(payAtCounter);
+        optionsBox.setStyle("-fx-padding: 10; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8;");
+
+        Label infoLabel = new Label("Payment will be collected at the counter when you pick up your order.");
+        infoLabel.setStyle("-fx-text-fill: #666; -fx-font-size: 11px;");
+        infoLabel.setWrapText(true);
+        infoLabel.setMaxWidth(310);
+
+        content.getChildren().addAll(instructionLabel, optionsBox, infoLabel);
+        paymentDialog.getDialogPane().setContent(content);
+
+        // Set result converter
+        paymentDialog.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButton) {
+                return "Pay At Counter";
+            }
+            return null;
+        });
+
+        Optional<String> result = paymentDialog.showAndWait();
+        return result.isPresent();
+    }
+
     private void playRandomTapSound() {
         try {
             String soundFile = random.nextBoolean() ? "/audio/tap1.mp3" : "/audio/tap2.mp3";
@@ -400,6 +449,11 @@ public class MenuController {
                 currentOrder.getTotalPrice(), currentOrder.getItems().size()));
 
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+
+            if (!showPaymentDialog()) {
+                return; // User cancelled payment
+            }
+
             OrderDAO orderDAO = new OrderDAO();
             int userId = loggedInUser.getId();
 

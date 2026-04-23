@@ -15,7 +15,7 @@
 
     <!-- header -->
     <HBox alignment="CENTER_LEFT" spacing="15">
-        <Label text="⚠️ LOW STOCK ALERTS" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #e74c3c;" />
+        <Label text="LOW STOCK ALERTS" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #e74c3c;" />
         <Region HBox.hgrow="ALWAYS" />
         <Label fx:id="statusLabel" text="Checking stock levels..." style="-fx-text-fill: #666;" />
     </HBox>
@@ -39,7 +39,7 @@
 
     <!-- action buttons -->
     <HBox spacing="12" alignment="CENTER">
-        <Button text="🔄 Refresh" onAction="#refreshStock" prefWidth="150" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;" />
-        <Button text="📦 Restock Selected" onAction="#handleRestock" prefWidth="150" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold;" />
+        <Button text="Refresh" onAction="#refreshStock" prefWidth="150" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;" />
+        <Button text="Restock Selected" onAction="#handleRestock" prefWidth="150" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold;" />
     </HBox>
 </VBox>

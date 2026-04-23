@@ -55,7 +55,7 @@
         <Label fx:id="errorLabel" styleClass="status-error" style="-fx-font-size: 12;" wrapText="true" alignment="CENTER"/>
 
         <!-- footer copyright text -->
-        <Label text="Camo-Gear Bistro © 2024"
+        <Label text="Camo-Gear Bistro © 2026"
                styleClass="status-muted" style="-fx-font-size: 10;"/>
 
     </VBox>
