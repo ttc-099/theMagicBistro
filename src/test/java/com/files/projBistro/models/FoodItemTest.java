@@ -53,7 +53,7 @@ class FoodItemTest {
                 .setName("Fries")
                 .setPrice(2.50)
                 .build();
-        assertEquals("Fries - £2.50", item.toString());
+        assertEquals("Fries - RM2.50", item.toString());
     }
 
     @Test

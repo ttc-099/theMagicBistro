@@ -13,7 +13,7 @@ import java.util.List;
 public class AdminDAO {
 
     // get connection from singleton (single source of truth)
-    private Connection getConnection() {
+    protected Connection getConnection() {
         return DatabaseConnection.getInstance().getConnection();
     }
 

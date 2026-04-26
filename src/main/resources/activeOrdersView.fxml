@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.files.projBistro.models.controllers.ActiveOrdersController"
@@ -19,10 +20,13 @@
                 <Insets top="20" right="20" bottom="15" left="20" />
             </padding>
             <Label text="📋 ACTIVE ORDERS" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+
             <HBox spacing="15" alignment="CENTER_LEFT">
                 <Button text="🔄 Refresh" onAction="#refreshOrders"
                         style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;" />
                 <Label fx:id="statusLabel" text="Loading orders..." style="-fx-text-fill: #7f8c8d; -fx-font-style: italic;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="selectedCountLabel" text="0 selected" style="-fx-text-fill: #3498db; -fx-font-weight: bold;" />
             </HBox>
             <Separator />
         </VBox>
@@ -30,8 +34,7 @@
 
     <center>
         <ListView fx:id="ordersListView"
-                  style="-fx-background-color: transparent; -fx-border-color: transparent;"
-                  VBox.vgrow="ALWAYS">
+                  style="-fx-background-color: transparent; -fx-border-color: transparent;">
             <padding>
                 <Insets top="10" right="15" bottom="10" left="15" />
             </padding>
@@ -45,9 +48,12 @@
                 <padding>
                     <Insets top="10" right="20" bottom="20" left="20" />
                 </padding>
-                <Button text="✓ Complete Selected" onAction="#handleCompleteOrder"
+                <Label text="💡 Tip: Click on the boxes to mark as Completed!"
+                       style="-fx-text-fill: #7f8c8d; -fx-font-size: 11px; -fx-font-style: italic;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button text="✓ Complete Selected" onAction="#handleCompleteOrders"
                         style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;" />
-                <Button text="✗ Cancel Selected" onAction="#handleCancelOrder"
+                <Button text="✗ Cancel Selected" onAction="#handleCancelOrders"
                         style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;" />
             </HBox>
         </VBox>

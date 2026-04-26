@@ -30,6 +30,7 @@ public class AdminPreviewController {
         String[] characters = {"Chloe", "Mimi", "Metsu", "Laniard"};
 
         for (String character : characters) {
+            // only get active items for this character
             List<FoodItem> activeItems = adminDAO.getActiveItemsByCharacter(character);
 
             Tab tab = new Tab(character);
@@ -48,6 +49,7 @@ public class AdminPreviewController {
                 emptyLabel.setStyle("-fx-text-fill: #999; -fx-padding: 20;");
                 contentBox.getChildren().add(emptyLabel);
             } else {
+                // use TilePane to arrange cards in a grid
                 javafx.scene.layout.TilePane tilePane = new javafx.scene.layout.TilePane();
                 tilePane.setHgap(20);
                 tilePane.setVgap(20);
@@ -69,6 +71,7 @@ public class AdminPreviewController {
         showStatus.accept("Menu preview refreshed!");
     }
 
+    // creates a card showing item image, name, price, and stock status
     private VBox createPreviewCard(FoodItem item) {
         VBox card = new VBox(8);
         card.setAlignment(Pos.TOP_CENTER);
@@ -81,6 +84,7 @@ public class AdminPreviewController {
         imageView.setFitWidth(100);
         imageView.setPreserveRatio(true);
 
+        // try to load image from resource path
         if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
             try {
                 java.net.URL resource = getClass().getResource(item.getImagePath());
@@ -88,7 +92,7 @@ public class AdminPreviewController {
                     String imageUrl = resource.toExternalForm();
                     imageView.setImage(new Image(imageUrl));
                 } else {
-                    // Image file not found – show a placeholder or nothing
+                    // show nothing
                     imageView.setImage(null);
                     System.out.println("Image not found: " + item.getImagePath());
                 }
@@ -115,7 +119,7 @@ public class AdminPreviewController {
         Label typeLabel = new Label(item.getItemType() + " • " + stockStatus);
         typeLabel.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 11px;");
 
-        Label priceLabel = new Label(String.format("£%.2f", item.getPrice()));
+        Label priceLabel = new Label(String.format("RM%.2f", item.getPrice()));
         priceLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #27ae60;");
 
         Label statusLabelPreview = new Label("✓ active");
@@ -125,6 +129,7 @@ public class AdminPreviewController {
         return card;
     }
 
+    // returns text based on stock level for display on card
     private String getStockStatusForPreview(int stock) {
         if (stock > 50) return "In stock";
         if (stock > 10) return "Low stock";

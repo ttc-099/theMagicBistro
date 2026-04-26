@@ -14,6 +14,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -26,101 +30,84 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// this controller lets admin edit the full menu (inventory)
-// it is similar to admincontroller but with filtering by character
 public class MenuEditController {
 
     // ===== screen elements =====
-    @FXML private TableView<FoodItem> inventoryTable;           // table showing all food items
-    @FXML private TableColumn<FoodItem, Integer> colId;         // item id column
-    @FXML private TableColumn<FoodItem, String> colName;        // item name column
-    @FXML private TableColumn<FoodItem, Double> colPrice;       // price column
-    @FXML private TableColumn<FoodItem, Integer> colStock;      // stock column
-    @FXML private TableColumn<FoodItem, String> colType;        // item type column (main, dessert, etc)
-    @FXML private TableColumn<FoodItem, String> colCharacter;   // character category column
+    @FXML private TableView<FoodItem> inventoryTable;
+    @FXML private TableColumn<FoodItem, Integer> colId;
+    @FXML private TableColumn<FoodItem, String> colName;
+    @FXML private TableColumn<FoodItem, Double> colPrice;
+    @FXML private TableColumn<FoodItem, Integer> colStock;
+    @FXML private TableColumn<FoodItem, String> colType;
+    @FXML private TableColumn<FoodItem, String> colCharacter;
 
-    @FXML private Label statusLabel;        // shows temporary messages
-    @FXML private Label itemCountLabel;     // shows number of items in filtered table
-    @FXML private ImageView imagePreview;   // shows preview of selected image
+    @FXML private Label statusLabel;
+    @FXML private Label itemCountLabel;
+    @FXML private ImageView imagePreview;
+    @FXML private StackPane imageContainer;
 
-    // form inputs for adding/editing items
+    // Editor controls - add these fx:id declarations
+    @FXML private Button chooseImageBtn;
+    @FXML private Button addBtn;
+    @FXML private Button updateBtn;
+    @FXML private Button deleteBtn;
+    @FXML private Button clearBtn;
+    @FXML private Label selectionHint;
+
     @FXML private TextField nameInput;
     @FXML private TextField priceInput;
     @FXML private TextField stockInput;
     @FXML private ComboBox<String> typeBox;
     @FXML private ComboBox<String> characterBox;
-    @FXML private TextArea descriptionInput;   // description of the item (not used everywhere)
+    @FXML private TextArea descriptionInput;
 
-    // filter buttons at the top
     @FXML private ToggleButton chloeFilter;
     @FXML private ToggleButton mimiFilter;
     @FXML private ToggleButton metsuFilter;
     @FXML private ToggleButton laniardFilter;
     @FXML private ToggleButton allFilter;
 
-    // ===== data =====
-    private AdminDAO adminDAO = new AdminDAO();                    // database helper
-    private ObservableList<FoodItem> allItems = FXCollections.observableArrayList(); // all items from db
-    private String currentFilter = "ALL";                          // which character we are filtering by
-    private String selectedImagePath = null;                       // path of chosen image
-    private final String MASTER_PIN = "1234";                      // admin pin
+    @FXML private StackPane editorStackPane;
+    @FXML private Rectangle editorOverlay;
 
-    // ===== setup - runs when screen loads =====
+    // ===== data =====
+    private AdminDAO adminDAO = new AdminDAO();
+    private ObservableList<FoodItem> allItems = FXCollections.observableArrayList();
+    private String currentFilter = "ALL";
+    private String selectedImagePath = null;
+    private final String MASTER_PIN = "1234";
+
     @FXML
     public void initialize() {
-        // fill the type dropdown with options
         typeBox.setItems(FXCollections.observableArrayList(
                 "Main", "Appetizer", "Dessert", "Drink", "Special"
         ));
-        // fill the character dropdown
         characterBox.setItems(FXCollections.observableArrayList(
                 "Chloe", "Mimi", "Metsu", "Laniard"
         ));
 
-        setupTableColumns();           // connect columns to data
-        loadAllItems();               // get all items from database
-        setupTableSelectionListener(); // when row clicked, fill the form
-        setupToggleGroup();           // make filter buttons work as a group
+        setupTableColumns();
+        loadAllItems();
+        setupTableSelectionListener();
+        setupToggleGroup();
 
-        // style the dropdown menus so text is readable
-        typeBox.setCellFactory(cb -> new ListCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item);
-                setStyle("-fx-text-fill: white; -fx-background-color: #2b2b2b;");
-            }
-        });
-        typeBox.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item);
-                setStyle("-fx-text-fill: white;");
-            }
-        });
-
-        characterBox.setCellFactory(cb -> new ListCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item);
-                setStyle("-fx-text-fill: white; -fx-background-color: #2b2b2b;");
-            }
-        });
-        characterBox.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item);
-                setStyle("-fx-text-fill: white;");
-            }
-        });
-
-        showTemporaryStatus("✅ Ready. Select a character to filter items.", "green");
+        disableFormFields(true);
     }
 
-    // tell each table column which property of fooditem to show
+    private void disableFormFields(boolean disable) {
+        nameInput.setDisable(disable);
+        priceInput.setDisable(disable);
+        stockInput.setDisable(disable);
+        typeBox.setDisable(disable);
+        characterBox.setDisable(disable);
+        descriptionInput.setDisable(disable);
+        // Leave image button and clear button enabled
+    }
+
+    private void enableFormFields() {
+        disableFormFields(false);
+    }
+
     private void setupTableColumns() {
         colId.setCellValueFactory(cellData ->
                 new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
@@ -136,7 +123,6 @@ public class MenuEditController {
                 new SimpleStringProperty(cellData.getValue().getCharCategory()));
     }
 
-    // group the filter buttons so only one can be selected at a time
     private void setupToggleGroup() {
         ToggleGroup filterGroup = new ToggleGroup();
         chloeFilter.setToggleGroup(filterGroup);
@@ -144,92 +130,118 @@ public class MenuEditController {
         metsuFilter.setToggleGroup(filterGroup);
         laniardFilter.setToggleGroup(filterGroup);
         allFilter.setToggleGroup(filterGroup);
-        allFilter.setSelected(true);   // start with "all" selected
+        allFilter.setSelected(true);
     }
 
-    // when user clicks a row in the table, fill the form with that item's data
     private void setupTableSelectionListener() {
         inventoryTable.getSelectionModel().selectedItemProperty().addListener((obs, old, selected) -> {
             if (selected != null) {
                 populateForm(selected);
+                enableFormFields();  // Enable when selected
+            } else {
+                clearForm();
+                disableFormFields(true);  // Disable when no selection
             }
         });
     }
 
-    // ===== filter methods =====
+//    private void setEditorEnabled(boolean enabled) {
+//        // Disable all input fields
+//        nameInput.setDisable(!enabled);
+//        priceInput.setDisable(!enabled);
+//        stockInput.setDisable(!enabled);
+//        descriptionInput.setDisable(!enabled);
+//        typeBox.setDisable(!enabled);
+//        characterBox.setDisable(!enabled);
+//        chooseImageBtn.setDisable(!enabled);
+//        updateBtn.setDisable(!enabled);
+//        deleteBtn.setDisable(!enabled);
+//        clearBtn.setDisable(!enabled);
+//        addBtn.setDisable(false); // Add button always enabled
+//
+//        // Add a prompt text when disabled
+//        if (!enabled) {
+//            String msg = "Select an item from the table first";
+//            nameInput.setPromptText(msg);
+//            priceInput.setPromptText(msg);
+//            stockInput.setPromptText(msg);
+//
+//            // Add tooltip to explain
+//            Tooltip tooltip = new Tooltip("Select an item from the table to edit");
+//            nameInput.setTooltip(tooltip);
+//            priceInput.setTooltip(tooltip);
+//            stockInput.setTooltip(tooltip);
+//            typeBox.setTooltip(tooltip);
+//            characterBox.setTooltip(tooltip);
+//        } else {
+//            nameInput.setPromptText("Item Name");
+//            priceInput.setPromptText("0.00");
+//            stockInput.setPromptText("0");
+//            nameInput.setTooltip(null);
+//            priceInput.setTooltip(null);
+//            stockInput.setTooltip(null);
+//            typeBox.setTooltip(null);
+//            characterBox.setTooltip(null);
+//        }
+//
+//        // Update selection hint visibility
+//        if (selectionHint != null) {
+//            selectionHint.setVisible(!enabled);
+//            selectionHint.setText("Select an item from the table above to edit");
+//        }
+//    }
+
+    private void applyFilter(String character) {
+        currentFilter = character;
+        if ("ALL".equals(character)) {
+            inventoryTable.setItems(allItems);
+        } else {
+            List<FoodItem> filtered = allItems.stream()
+                    .filter(item -> character.equals(item.getCharCategory()))
+                    .collect(Collectors.toList());
+            inventoryTable.setItems(FXCollections.observableArrayList(filtered));
+        }
+        updateItemCount();
+    }
+
     @FXML private void filterByChloe() { applyFilter("Chloe"); }
     @FXML private void filterByMimi() { applyFilter("Mimi"); }
     @FXML private void filterByMetsu() { applyFilter("Metsu"); }
     @FXML private void filterByLaniard() { applyFilter("Laniard"); }
     @FXML private void filterAll() { applyFilter("ALL"); }
 
-
-    // Add this helper method to MenuEditController
     private String copyImageToProject(String sourcePath) throws IOException {
         File sourceFile = new File(sourcePath);
         String fileName = sourceFile.getName();
-        // Get the project's resources/images folder
         String projectRoot = System.getProperty("user.dir");
         String targetDir = projectRoot + "/src/main/resources/images/";
         File targetDirFile = new File(targetDir);
         if (!targetDirFile.exists()) {
-            targetDirFile.mkdirs();  // create folder if missing
+            targetDirFile.mkdirs();
         }
         String targetPath = targetDir + fileName;
-        // Copy the file (overwrites if exists)
         Files.copy(Paths.get(sourcePath), Paths.get(targetPath), StandardCopyOption.REPLACE_EXISTING);
-        // Return the path relative to resources (for loading later)
         return "/images/" + fileName;
     }
 
-    // filter the table to show only items for a specific character
-    private void applyFilter(String character) {
-        currentFilter = character;
-        if ("ALL".equals(character)) {
-            inventoryTable.setItems(allItems);   // show everything
-            showTemporaryStatus("📋 Showing all " + allItems.size() + " items", "blue");
-        } else {
-            // filter the list to only matching character
-            List<FoodItem> filtered = allItems.stream()
-                    .filter(item -> character.equals(item.getCharCategory()))
-                    .collect(Collectors.toList());
-            inventoryTable.setItems(FXCollections.observableArrayList(filtered));
-            showTemporaryStatus("👤 Showing " + filtered.size() + " items for " + character, "blue");
-        }
-        updateItemCount();   // update the count label
-    }
-
-    // ===== add, edit, remove items =====
-
-    // add a new food item
     @FXML
     private void handleAddItem() {
-        if (!isAuthorized()) return;       // ask for pin
-        if (!validateInputs()) return;     // check form is filled
+        if (!isAuthorized()) return;
 
-        try {
-            int charId = getCharacterId(characterBox.getValue());
-            FoodItem item = buildItemFromInput();
+        // Enable form for adding new item
+        enableFormFields();
+        clearForm();  // clear any existing data
 
-            if (adminDAO.addItem(item, charId)) {
-                loadAllItems();            // reload from database
-                applyFilter(currentFilter); // reapply filter
-                clearForm();               // clear the form
-                showTemporaryStatus("✅ Item added successfully!", "green");
-            } else {
-                showTemporaryStatus("❌ Failed to add item", "red");
-            }
-        } catch (NumberFormatException e) {
-            showTemporaryStatus("❌ Invalid price or stock value", "red");
-        }
+        // focus on name field
+        nameInput.requestFocus();
+        showTemporaryStatus("Enter new item details, then click Save.", "blue");
     }
 
-    // edit the selected item
     @FXML
     private void handleEditItem() {
         FoodItem selected = inventoryTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showTemporaryStatus("⚠️ Select an item first to edit", "orange");
+            showTemporaryStatus("Select an item first to edit", "orange");
             return;
         }
 
@@ -239,7 +251,6 @@ public class MenuEditController {
         try {
             int charId = getCharacterId(characterBox.getValue());
 
-            // build updated item with data from form
             FoodItem updatedItem = new FoodItem.FoodItemBuilder()
                     .setId(selected.getId())
                     .setName(nameInput.getText())
@@ -255,27 +266,25 @@ public class MenuEditController {
                 loadAllItems();
                 applyFilter(currentFilter);
                 clearForm();
-                showTemporaryStatus("✅ Item updated successfully!", "green");
+                showTemporaryStatus("Item updated successfully!", "green");
             } else {
-                showTemporaryStatus("❌ Failed to update item", "red");
+                showTemporaryStatus("Failed to update item", "red");
             }
         } catch (NumberFormatException e) {
-            showTemporaryStatus("❌ Invalid price or stock value", "red");
+            showTemporaryStatus("Invalid price or stock value", "red");
         }
     }
 
-    // remove the selected item (soft delete)
     @FXML
     private void handleRemoveItem() {
         FoodItem selected = inventoryTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showTemporaryStatus("⚠️ Select an item first to remove", "orange");
+            showTemporaryStatus("Select an item first to remove", "orange");
             return;
         }
 
         if (!isAuthorized()) return;
 
-        // ask for confirmation
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirm Deletion");
         confirm.setHeaderText("Remove " + selected.getName() + "?");
@@ -286,15 +295,21 @@ public class MenuEditController {
                 loadAllItems();
                 applyFilter(currentFilter);
                 clearForm();
-                showTemporaryStatus("🗑️ Item removed successfully", "green");
+                showTemporaryStatus("Item removed successfully", "green");
             } else {
-                showTemporaryStatus("❌ Failed to remove item", "red");
+                showTemporaryStatus("Failed to remove item", "red");
             }
         }
     }
 
     @FXML
     private void handleChooseImage() {
+        FoodItem selected = inventoryTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showTemporaryStatus("Select an item first before adding an image", "orange");
+            return;
+        }
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Food Item Image");
         fileChooser.getExtensionFilters().addAll(
@@ -303,40 +318,33 @@ public class MenuEditController {
         File selectedFile = fileChooser.showOpenDialog(new Stage());
         if (selectedFile != null) {
             try {
-                // Copy the file and store the relative path
                 selectedImagePath = copyImageToProject(selectedFile.getAbsolutePath());
-                // Show preview
                 Image image = new Image(selectedFile.toURI().toString());
                 imagePreview.setImage(image);
-                showTemporaryStatus("📷 Image copied to project: " + selectedFile.getName(), "blue");
+                showTemporaryStatus("Image copied: " + selectedFile.getName(), "blue");
             } catch (IOException e) {
-                showTemporaryStatus("❌ Failed to copy image: " + e.getMessage(), "red");
+                showTemporaryStatus("Failed to copy image: " + e.getMessage(), "red");
             }
         }
     }
 
-
-    // ===== helper methods =====
-
-    // load all items from database into memory
     private void loadAllItems() {
         allItems.clear();
         allItems.addAll(adminDAO.getAllInventory());
         updateItemCount();
     }
 
-    // update the label that shows how many items are in the filtered table
     private void updateItemCount() {
         itemCountLabel.setText(String.valueOf(inventoryTable.getItems().size()));
     }
 
-    // fill the form with data from a selected item (for editing)
     private void populateForm(FoodItem item) {
         nameInput.setText(item.getName());
         priceInput.setText(String.valueOf(item.getPrice()));
         stockInput.setText(String.valueOf(item.getStock()));
         typeBox.setValue(item.getItemType());
         characterBox.setValue(item.getCharCategory());
+        descriptionInput.setText(item.getDescription() != null ? item.getDescription() : "");
         selectedImagePath = item.getImagePath();
 
         if (selectedImagePath != null && !selectedImagePath.isEmpty()) {
@@ -351,19 +359,18 @@ public class MenuEditController {
         }
     }
 
-    // create a new fooditem object from the form data
-    private FoodItem buildItemFromInput() {
-        return new FoodItem.FoodItemBuilder()
-                .setName(nameInput.getText())
-                .setPrice(Double.parseDouble(priceInput.getText()))
-                .setStock(Integer.parseInt(stockInput.getText()))
-                .setCharCategory(characterBox.getValue())
-                .setItemType(typeBox.getValue())
-                .setImagePath(selectedImagePath)
-                .build();
-    }
+//    private FoodItem buildItemFromInput() {
+//        return new FoodItem.FoodItemBuilder()
+//                .setName(nameInput.getText())
+//                .setPrice(Double.parseDouble(priceInput.getText()))
+//                .setStock(Integer.parseInt(stockInput.getText()))
+//                .setCharCategory(characterBox.getValue())
+//                .setItemType(typeBox.getValue())
+//                .setImagePath(selectedImagePath)
+//                .setDescription(descriptionInput.getText())
+//                .build();
+//    }
 
-    // convert character name to database id (1 to 4)
     private int getCharacterId(String characterName) {
         switch (characterName) {
             case "Chloe": return 1;
@@ -374,41 +381,39 @@ public class MenuEditController {
         }
     }
 
-    // check that all required form fields are filled
     private boolean validateInputs() {
         if (nameInput.getText().trim().isEmpty()) {
-            showTemporaryStatus("⚠️ Please enter an item name", "orange");
+            showTemporaryStatus("Please enter an item name", "orange");
             return false;
         }
         if (priceInput.getText().trim().isEmpty()) {
-            showTemporaryStatus("⚠️ Please enter a price", "orange");
+            showTemporaryStatus("Please enter a price", "orange");
             return false;
         }
         if (stockInput.getText().trim().isEmpty()) {
-            showTemporaryStatus("⚠️ Please enter stock quantity", "orange");
+            showTemporaryStatus("Please enter stock quantity", "orange");
             return false;
         }
         if (characterBox.getValue() == null) {
-            showTemporaryStatus("⚠️ Please select a character", "orange");
+            showTemporaryStatus("Please select a character", "orange");
             return false;
         }
         if (typeBox.getValue() == null) {
-            typeBox.setValue("Main");   // default if not set
+            typeBox.setValue("Main");
         }
         return true;
     }
 
-    // ask for admin pin before sensitive actions
+    // simple pin check
     private boolean isAuthorized() {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Security Clearance");
-        dialog.setHeaderText("Mission Critical Action: Enter PIN");
+        dialog.setHeaderText("Enter PIN to continue");
         dialog.setContentText("Enter 4-digit PIN:");
         Optional<String> result = dialog.showAndWait();
         return result.isPresent() && result.get().equals(MASTER_PIN);
     }
 
-    // clear all form fields
     @FXML
     private void clearForm() {
         nameInput.clear();
@@ -423,15 +428,13 @@ public class MenuEditController {
         showTemporaryStatus("Form cleared", "gray");
     }
 
-    // manually refresh the table
     @FXML
     public void refreshTable() {
         loadAllItems();
         applyFilter(currentFilter);
-        showTemporaryStatus("🔄 Table refreshed", "blue");
+        showTemporaryStatus("Table refreshed", "blue");
     }
 
-    // show a message that disappears after 3 seconds
     private void showTemporaryStatus(String message, String type) {
         statusLabel.setText(message);
         statusLabel.getStyleClass().removeAll("status-success", "status-error", "status-warning", "status-info", "status-muted");
@@ -444,7 +447,6 @@ public class MenuEditController {
 
         statusLabel.getStyleClass().add(styleClass);
 
-        // run in background so it doesn't freeze the screen
         new Thread(() -> {
             try {
                 Thread.sleep(3000);
@@ -459,7 +461,6 @@ public class MenuEditController {
         }).start();
     }
 
-    // go back to the admin dashboard
     @FXML
     private void handleBack() {
         try {
@@ -471,7 +472,7 @@ public class MenuEditController {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            showTemporaryStatus("❌ Error returning to dashboard", "red");
+            showTemporaryStatus("Error returning to dashboard", "red");
         }
     }
 }

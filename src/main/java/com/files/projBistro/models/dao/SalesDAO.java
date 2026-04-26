@@ -134,9 +134,9 @@ public class SalesDAO {
 
         sql += " GROUP BY f.item_id, f.name ORDER BY times_ordered DESC, revenue DESC LIMIT 10";
 
-        System.out.println("[DEBUG] popular items sql: " + sql);  // debug print
+        System.out.println("[SYSTEM] popular items sql: " + sql);  // SYSTEM print
         if (hasDateRange) {
-            System.out.println("[DEBUG] date range: " + startDate + " to " + endDate);
+            System.out.println("[SYSTEM] date range: " + startDate + " to " + endDate);
         }
 
         try (Connection conn = getConnection();
@@ -155,14 +155,14 @@ public class SalesDAO {
                         rs.getDouble("revenue")
                 );
                 items.add(item);
-                System.out.println("[DEBUG] found popular item: " + item.getName() + " (" + item.getTimesOrdered() + " times)");
+                System.out.println("[SYSTEM] found popular item: " + item.getName() + " (" + item.getTimesOrdered() + " times)");
             }
         } catch (SQLException e) {
             System.out.println("error in getpopularitems: " + e.getMessage());
             e.printStackTrace();
         }
 
-        System.out.println("[DEBUG] returning " + items.size() + " popular items");
+        System.out.println("[SYSTEM] returning " + items.size() + " popular items");
         return items;
     }
 
@@ -200,7 +200,7 @@ public class SalesDAO {
 
         sql += " GROUP BY f.item_id, f.name ORDER BY times_ordered DESC, revenue DESC LIMIT 10";
 
-        System.out.println("[DEBUG] filtered popular items sql: " + sql);
+        System.out.println("[SYSTEM] filtered popular items sql: " + sql);
 
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

@@ -2,15 +2,9 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-
-<!--
-  this is the login screen
-  users enter username and password to log in
-  controller: logincontroller.java
--->
 
 <!-- stack pane centers everything -->
 <StackPane xmlns="http://javafx.com/javafx"
@@ -18,45 +12,50 @@
            fx:controller="com.files.projBistro.models.controllers.LoginController">
 
     <!-- main vertical box containing all login elements -->
-    <VBox alignment="CENTER" spacing="20"
-          maxWidth="350" maxHeight="450"
-          styleClass="item-card" style="-fx-padding: 30;">
+    <VBox alignment="CENTER" spacing="15"
+          maxWidth="380" maxHeight="550"
+          styleClass="login-card" style="-fx-padding: 30;">
 
-        <!-- logo icon -->
-        <Label text="🍽️" style="-fx-font-size: 64;"/>
+        <!-- logo icon - centered -->
+        <ImageView fitHeight="100" fitWidth="100" preserveRatio="true">
+            <Image url="@/main_icon.png" />
+        </ImageView>
 
         <!-- restaurant name -->
-        <Label text="CAMO-GEAR BISTRO" styleClass="bold-text" style="-fx-font-size: 20;"/>
+        <Label text="CAMO-GEAR BISTRO" styleClass="bold-text"
+               style="-fx-font-size: 22px; -fx-font-weight: bold;" alignment="CENTER"/>
 
         <!-- subtitle -->
-        <Label text="Admin and Customer Portal" styleClass="muted-text" style="-fx-font-size: 12;"/>
+        <Label text="Admin and Customer Portal" styleClass="muted-text"
+               style="-fx-font-size: 12px;" alignment="CENTER"/>
 
-        <Separator prefWidth="250"/>
+        <Separator prefWidth="280"/>
 
         <!-- username input field -->
         <TextField fx:id="usernameField" promptText="Username"
-                   prefWidth="250" maxWidth="250"/>
+                   prefWidth="280" maxWidth="280"/>
 
-        <!-- password input field (characters are hidden) -->
+        <!-- password input field -->
         <PasswordField fx:id="passwordField" promptText="Password"
-                       prefWidth="250" maxWidth="250"/>
+                       prefWidth="280" maxWidth="280"/>
 
         <!-- login button -->
         <Button fx:id="loginBtn" text="LOGIN" onAction="#handleLogin"
-                prefWidth="250" maxWidth="250" styleClass="login-button"
+                prefWidth="280" maxWidth="280" styleClass="login-button"
                 onMouseEntered="#onLoginButtonHover"
                 onMouseExited="#onLoginButtonExit"/>
 
         <!-- link to registration screen -->
         <Hyperlink text="New recruit? Register here" onAction="#handleShowRegister"
-                   styleClass="muted-text" style="-fx-font-size: 12;"/>
+                   styleClass="muted-text" style="-fx-font-size: 12px;"/>
 
-        <!-- error message label (shows when login fails) -->
-        <Label fx:id="errorLabel" styleClass="status-error" style="-fx-font-size: 12;" wrapText="true" alignment="CENTER"/>
+        <!-- error message label -->
+        <Label fx:id="errorLabel" styleClass="status-error"
+               style="-fx-font-size: 12px;" wrapText="true" alignment="CENTER" maxWidth="280"/>
 
         <!-- footer copyright text -->
         <Label text="Camo-Gear Bistro © 2026"
-               styleClass="status-muted" style="-fx-font-size: 10;"/>
+               styleClass="status-muted" style="-fx-font-size: 10px;"/>
 
     </VBox>
 </StackPane>

@@ -27,8 +27,7 @@
 
     <!-- Button Container -->
     <VBox spacing="10" alignment="CENTER" prefWidth="200">
-        <Button text="Back to Menu" onAction="#handleBack" prefWidth="180" />
-
+        <Button text="Back to Menu" onAction="#handleBackToMenu" prefWidth="180" />
         <Button text="Back to Login" onAction="#handleBackToLogin" prefWidth="180" />
     </VBox>
 

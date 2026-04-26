@@ -5,7 +5,12 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="700.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.files.projBistro.models.controllers.MenuController">
+<BorderPane prefHeight="700.0" prefWidth="1024.0"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.files.projBistro.models.controllers.MenuController"
+            styleClass="main-root">
+
     <padding>
         <Insets bottom="16" left="16" right="16" top="16" />
     </padding>
@@ -16,54 +21,47 @@
                 <padding>
                     <Insets bottom="1" left="15" right="15" top="10" />
                 </padding>
-                <Label style="-fx-font-size: 26px;                          -fx-font-weight: 800;                         -fx-text-fill: linear-gradient(from 0% 0% to 100% 0%, #3498db, #1abc9c, #2ecc71);" text="CAMO-GEAR BISTRO">
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-               <padding>
-                  <Insets bottom="-7.0" />
-               </padding></Label>
+                <Label text="CAMO-GEAR BISTRO" styleClass="title-label" />
                 <Region HBox.hgrow="ALWAYS" />
 
-                <Button fx:id="settingsBtn" onAction="#handleOpenSettings" text="Settings" />
-
-                <Button fx:id="authBtn" onAction="#handleAuthAction" text="Login" />
+                <Button fx:id="orderHistoryBtn" onAction="#handleOrderHistory" text="Order History" styleClass="settings-button" />
+                <Button fx:id="settingsBtn" onAction="#handleOpenSettings" text="Settings" styleClass="settings-button" />
+                <Button fx:id="authBtn" onAction="#handleAuthAction" text="Login" styleClass="auth-button" />
             </HBox>
 
             <HBox alignment="CENTER_LEFT">
                 <padding>
                     <Insets bottom="5" left="15" right="15" top="3" />
                 </padding>
-                <Label fx:id="welcomeLabel" style="-fx-font-size: 16px;               -fx-font-weight: 600;" text="Welcome, Guest!">
-               <HBox.margin>
-                  <Insets left="2.0" />
-               </HBox.margin></Label>
+                <Label fx:id="welcomeLabel" text="Welcome, Guest!" styleClass="welcome-label" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="switchAccountBtn" onAction="#handleSwitchAccount" text="Switch Account" visible="false" />
             </HBox>
         </VBox>
     </top>
 
     <center>
-        <TabPane fx:id="categoryTabs" prefHeight="573.0" prefWidth="692.0" tabClosingPolicy="UNAVAILABLE">
-         <BorderPane.margin>
-            <Insets top="8.0" />
-         </BorderPane.margin></TabPane>
+        <StackPane fx:id="mainContentArea">
+            <VBox fx:id="menuView" VBox.vgrow="ALWAYS">
+                <TabPane fx:id="categoryTabs" prefHeight="573.0" prefWidth="692.0" tabClosingPolicy="UNAVAILABLE" styleClass="menu-tabpane">
+                    <BorderPane.margin>
+                        <Insets top="8.0" />
+                    </BorderPane.margin>
+                </TabPane>
+            </VBox>
+        </StackPane>
     </center>
 
     <right>
-        <VBox prefWidth="300" spacing="18">
+        <VBox prefWidth="300" spacing="18" styleClass="order-sidebar">
             <padding>
                 <Insets bottom="15" left="15" right="15" top="15" />
             </padding>
 
-            <Label text="YOUR ORDER" />
-
-            <Separator />
-
-            <ListView fx:id="cartListView" VBox.vgrow="ALWAYS">
+            <Label text="YOUR ORDER" styleClass="order-title" />
+            <Separator styleClass="custom-separator" />
+            <ListView fx:id="cartListView" VBox.vgrow="ALWAYS" styleClass="cart-listview">
                 <placeholder>
-                    <Label text="Your cart is empty." />
+                    <Label text="Your cart is empty." styleClass="empty-cart-label" />
                 </placeholder>
             </ListView>
 
@@ -72,20 +70,17 @@
                     <Insets bottom="10" left="10" right="10" top="10" />
                 </padding>
                 <ImageView fx:id="characterImageView" fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@icons/ic_Chloe/icon_chloe.jpeg" />
+                    <Image url="@icons/ic_Chloe/icon_chloe.png" />
                 </ImageView>
-                <VBox spacing="5" style="-fx-background-color: #e8f4f8; -fx-background-radius: 20; -fx-padding: 12 15 12 15;" HBox.hgrow="ALWAYS">
-                    <Label fx:id="dialogueLabel" style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;" text="Please select an item to start." wrapText="true" />
+                <VBox spacing="5" styleClass="dialogue-bubble" HBox.hgrow="ALWAYS">
+                    <Label fx:id="dialogueLabel" text="Please select an item to start." wrapText="true" styleClass="dialogue-text" />
                 </VBox>
             </HBox>
 
-            <Separator />
-
-            <Label fx:id="totalLabel" text="Total: 0.00" />
-
-            <Button fx:id="submitBtn" onAction="#handleSubmitOrder" prefHeight="40" prefWidth="270" text="SUBMIT ORDER" />
-
-            <Button onAction="#handleClearCart" prefHeight="35" prefWidth="270" text="Clear Cart" />
+            <Separator styleClass="custom-separator" />
+            <Label fx:id="totalLabel" text="Total: 0.00" styleClass="total-label" />
+            <Button fx:id="submitBtn" onAction="#handleSubmitOrder" prefHeight="40" prefWidth="270" text="SUBMIT ORDER" styleClass="submit-button" />
+            <Button onAction="#handleClearCart" prefHeight="35" prefWidth="270" text="Clear Cart" styleClass="clear-cart-button" />
         </VBox>
     </right>
 </BorderPane>

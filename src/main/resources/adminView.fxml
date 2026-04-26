@@ -6,8 +6,8 @@
 <?import javafx.scene.layout.*?>
 
 <VBox spacing="20" prefHeight="700.0" prefWidth="1024.0"
-      xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.files.projBistro.models.controllers.admin.AdminController"
       style="-fx-background-color: #f5f5f5;">
     <padding>
@@ -41,7 +41,7 @@
                                 <columns>
                                     <TableColumn fx:id="colId" text="ID" prefWidth="50" />
                                     <TableColumn fx:id="colName" text="Item Name" prefWidth="200" />
-                                    <TableColumn fx:id="colPrice" text="Price (£)" prefWidth="80" />
+                                    <TableColumn fx:id="colPrice" text="Price (RM)" prefWidth="80" />
                                     <TableColumn fx:id="colStock" text="Stock" prefWidth="80" />
                                     <TableColumn fx:id="colCategory" text="Character" prefWidth="120" />
                                     <TableColumn fx:id="colActive" text="Status" prefWidth="100" />
@@ -52,50 +52,71 @@
 
                             <Label text="Item Details:" style="-fx-font-weight: bold;" />
 
-                            <!-- CORRECTED: All form fields in one GridPane -->
-                            <GridPane hgap="15" vgap="12" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: #ddd; -fx-border-radius: 6;">
-                                <!-- Row 0: Name -->
-                                <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                <TextField fx:id="nameInput" promptText="Item name" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                            <!-- ENCLOSE BOTH FORM AND IMAGE SECTION IN A SINGLE STACKPANE -->
+                            <StackPane fx:id="formStackPane">
 
-                                <!-- Row 1: Price -->
-                                <Label text="Price:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                                <TextField fx:id="priceInput" promptText="0.00" prefWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                <!-- The actual content (form + image section) -->
+                                <VBox spacing="16">
+                                    <!-- Form GridPane -->
+                                    <GridPane hgap="15" vgap="12" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: #ddd; -fx-border-radius: 6;">
+                                        <!-- Row 0: Name -->
+                                        <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                        <TextField fx:id="nameInput" promptText="Item name" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                                <!-- Row 2: Stock -->
-                                <Label text="Stock:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                                <TextField fx:id="stockInput" promptText="0" prefWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                        <!-- Row 1: Price -->
+                                        <Label text="Price:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                        <TextField fx:id="priceInput" promptText="0.00" prefWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                                <!-- Row 3: Character -->
-                                <Label text="Character:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                                <ComboBox fx:id="categoryBox" promptText="Select character" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                        <!-- Row 2: Stock -->
+                                        <Label text="Stock:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                        <TextField fx:id="stockInput" promptText="0" prefWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                                <!-- Row 4: Description (FIXED - properly placed) -->
-                                <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                                <TextArea fx:id="descriptionInput" prefHeight="80" wrapText="true" prefWidth="400" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                        <!-- Row 3: Character -->
+                                        <Label text="Character:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                        <ComboBox fx:id="categoryBox" promptText="Select character" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                                <!-- Row 5: Image button -->
-                                <Label text="Image:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-                                <Button fx:id="chooseImageBtn" text="Browse..." onAction="#handleChooseImage" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                            </GridPane>
+                                        <!-- Row 4: Description -->
+                                        <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                        <TextArea fx:id="descriptionInput" prefHeight="80" wrapText="true" prefWidth="400" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-                            <!-- Image preview section (separate from GridPane) -->
-                            <HBox spacing="20" alignment="CENTER_LEFT">
-                                <VBox spacing="6">
-                                    <Label text="Selected Image:" style="-fx-font-weight: bold;" />
-                                    <Label fx:id="imagePathLabel" text="No image selected" wrapText="true" prefWidth="220" />
+                                        <!-- Row 5: Image button -->
+                                        <Label text="Image:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                        <Button fx:id="chooseImageBtn" text="Browse..." onAction="#handleChooseImage" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                    </GridPane>
+
+                                    <!-- Image preview section -->
+                                    <HBox spacing="20" alignment="CENTER_LEFT">
+                                        <VBox spacing="6">
+                                            <Label text="Selected Image:" style="-fx-font-weight: bold;" />
+                                            <Label fx:id="imagePathLabel" text="No image selected" wrapText="true" prefWidth="220" />
+                                        </VBox>
+                                        <StackPane prefWidth="160" prefHeight="120" style="-fx-border-color: #ddd; -fx-background-color: white;">
+                                            <ImageView fx:id="imagePreview" fitWidth="140" fitHeight="100" preserveRatio="true" />
+                                        </StackPane>
+                                    </HBox>
                                 </VBox>
-                                <StackPane prefWidth="160" prefHeight="120" style="-fx-border-color: #ddd; -fx-background-color: white;">
-                                    <ImageView fx:id="imagePreview" fitWidth="140" fitHeight="100" preserveRatio="true" />
-                                </StackPane>
-                            </HBox>
+
+                                <!-- GREY OVERLAY (covers both form AND image section) -->
+                                <VBox alignment="CENTER" spacing="10"
+                                      style="-fx-background-color: rgba(200, 200, 200, 0.85); -fx-background-radius: 6;"
+                                      fx:id="formOverlay">
+                                    <Label text="🔒" style="-fx-font-size: 32px;" />
+                                    <Label text="Select an item from the table above to edit"
+                                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #444;" />
+                                    <Label text="Click any row in the inventory table"
+                                           style="-fx-font-size: 12px; -fx-text-fill: #666;" />
+                                </VBox>
+
+                            </StackPane>
 
                             <!-- Action buttons -->
                             <HBox spacing="12">
                                 <Button text="Add Item" onAction="#handleAddItemPopup" style="-fx-background-color: #2ecc71; -fx-text-fill: white;" />
+                                <Button text="Add Multiple Items" onAction="#handleAddMultipleItemsPopup" style="-fx-background-color: #9b59b6; -fx-text-fill: white;" />
                                 <Button text="Save Changes" onAction="#handleSaveItem" style="-fx-background-color: #3498db; -fx-text-fill: white;" />
                                 <Button text="Delete Item" onAction="#handleHardDeleteItem" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" />
                                 <Region HBox.hgrow="ALWAYS" />
+                                <Button text="Refresh Table" onAction="#refreshInventoryTable" style="-fx-background-color: #9b59b6; -fx-text-fill: white;" />
                                 <Button text="Clear Form" onAction="#clearInputs" />
                             </HBox>
 
@@ -219,7 +240,7 @@
                                 <VBox alignment="CENTER" spacing="8" prefWidth="200"
                                       style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: #ddd; -fx-border-radius: 8;">
                                     <Label text="Total Revenue" />
-                                    <Label fx:id="totalRevenueLabel" text="£0.00" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #27ae60;" />
+                                    <Label fx:id="totalRevenueLabel" text="RM0.00" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #27ae60;" />
                                 </VBox>
 
                                 <VBox alignment="CENTER" spacing="8" prefWidth="200"
@@ -237,7 +258,7 @@
                                 <VBox alignment="CENTER" spacing="8" prefWidth="200"
                                       style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: #ddd; -fx-border-radius: 8;">
                                     <Label text="Average Order Value" />
-                                    <Label fx:id="avgOrderValueLabel" text="£0.00" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+                                    <Label fx:id="avgOrderValueLabel" text="RM0.00" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
                                 </VBox>
                             </HBox>
 
@@ -260,7 +281,7 @@
                             </TableView>
 
                             <HBox spacing="12" alignment="CENTER_RIGHT">
-                                <Button text="Export to CSV" onAction="#handleExportSales" />
+                                <Button text="Export to PDF/CSV" onAction="#handleExportSales" />
                             </HBox>
 
                             <Region prefHeight="20" />
@@ -279,7 +300,7 @@
                             </padding>
 
                             <Label text="Live Menu Preview" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #2c3e50;" />
-                            <Label text="This is how customers see your menu. Only active items (green status) will appear."
+                            <Label text="The displayed items are what will be seen by customers."
                                    style="-fx-text-fill: #666; -fx-font-size: 12px;" />
 
                             <Separator />
@@ -298,8 +319,17 @@
                     </content>
                 </ScrollPane>
             </Tab>
+
+            <!-- ===== TAB 5: FEEDBACK AND LOYALTY ===== -->
+            <Tab text="FEEDBACK &amp; LOYALTY">
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                    <content>
+                        <fx:include source="adminFeedbackView.fxml" />
+                    </content>
+                </ScrollPane>
+            </Tab>
+
         </tabs>
     </TabPane>
 
-    <Button text="← Back to Menu" onAction="#handleBack" />
 </VBox>

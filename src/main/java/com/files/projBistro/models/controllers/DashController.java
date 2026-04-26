@@ -20,7 +20,7 @@ import java.io.IOException;
 public class DashController {
 
     @FXML
-    private VBox contentArea;  // changed from StackPane to VBox
+    private VBox contentArea;
     @FXML
     private Label statusLabel;
 
@@ -34,6 +34,11 @@ public class DashController {
     @FXML private Label stockLabel;
 
     private User loggedInUser;
+    private MainController mainController;
+
+    public void setMainController(MainController controller) {
+        this.mainController = controller;
+    }
 
     public void setLoggedInUser(User user) {
         this.loggedInUser = user;
@@ -51,7 +56,7 @@ public class DashController {
     }
 
     private void setupHoverEffects() {
-        // inventory menu hover
+        // makes sidebar items highlight when mouse hovers over them
         if (inventoryMenuItem != null && inventoryLabel != null) {
             inventoryMenuItem.setOnMouseEntered(e -> {
                 inventoryMenuItem.setStyle("-fx-background-color: #3498db; -fx-padding: 10 15 10 15; -fx-background-radius: 8;");
@@ -125,17 +130,22 @@ public class DashController {
 
     @FXML
     private void handleLogout(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/loginView.fxml"));
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(loader.load(), 400, 500);
-        stage.setScene(scene);
-        stage.setTitle("Camo-Gear Bistro | Login");
-        stage.show();
+        // Use MainController to return to login
+        if (mainController != null) {
+            mainController.showLoginView();
+        } else {
+            // Fallback
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/loginView.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(loader.load(), 400, 500);
+            stage.setScene(scene);
+            stage.setTitle("Camo-Gear Bistro | Login");
+            stage.show();
+        }
     }
 
     @FXML
     private void showMenuManagement() {
-
         if (loggedInUser == null) {
             statusLabel.setText("Error: No user logged in. Please log out and back in.");
             return;
@@ -151,6 +161,11 @@ public class DashController {
             AdminController adminController = loader.getController();
             adminController.setParentContentArea(contentArea);
             adminController.setLoggedInUser(loggedInUser);
+
+            // Pass MainController reference
+            if (mainController != null) {
+                adminController.setMainController(mainController);
+            }
 
             contentArea.getChildren().setAll(node);
             if (node instanceof Region) {

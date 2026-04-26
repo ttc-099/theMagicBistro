@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.files.projBistro.models.controllers.RegisterController">
+
+    <VBox alignment="CENTER" spacing="20"
+          maxWidth="350" maxHeight="550"
+          styleClass="login-card" style="-fx-padding: 30;">
+
+        <Label text="🎖️" style="-fx-font-size: 48;"/>
+
+        <Label text="SOLDIER REGISTRATION" styleClass="status-success"
+               style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+
+        <Label text="Join the Bistro Frontline" styleClass="muted-text"
+               style="-fx-font-size: 11;"/>
+
+        <Separator prefWidth="250"/>
+
+        <TextField fx:id="usernameField" promptText="Username"
+                   prefWidth="250" maxWidth="250"/>
+
+        <PasswordField fx:id="passwordField" promptText="Password"
+                       prefWidth="250" maxWidth="250"/>
+
+        <TextField fx:id="phoneField" promptText="Phone Number (e.g. 0123456789)"
+                   prefWidth="250" maxWidth="250"/>
+
+        <Button fx:id="registerBtn" text="REGISTER" onAction="#handleRegister"
+                prefWidth="250" maxWidth="250" styleClass="login-button"
+                onMouseEntered="#onRegisterButtonHover"
+                onMouseExited="#onRegisterButtonExit"/>
+
+        <!-- ✅ Back to Login button -->
+        <Button text="← Back to Login" onAction="#handleBackToLogin"
+                prefWidth="250" maxWidth="250"
+                style="-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;"/>
+
+        <Label fx:id="statusLabel" styleClass="status-error" style="-fx-font-size: 12;" wrapText="true" alignment="CENTER"/>
+
+        <Label text="Camo-Gear Bistro © 2026"
+               styleClass="status-muted" style="-fx-font-size: 10;"/>
+
+    </VBox>
+</StackPane>

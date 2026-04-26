@@ -16,7 +16,7 @@ import java.util.Random;
 public class DialogueDAO {
 
     // helper method to get a database connection
-    private Connection getConnection() {
+    protected Connection getConnection() {
         return DatabaseConnection.getInstance().getConnection();
     }
 
@@ -51,7 +51,7 @@ public class DialogueDAO {
 
     // get all dialogue lines for a specific character (for admin editing)
     public List<DialogueEntry> getDialoguesByCharacter(int characterId) {
-        System.out.println("[DEBUG_LOG] DialogueDAO: Fetching dialogues for characterId: " + characterId);
+        System.out.println("[SYSTEM_LOG] DialogueDAO: Fetching dialogues for characterId: " + characterId);
         List<DialogueEntry> dialogues = new ArrayList<>();
         String sql = "SELECT dialogue_id, trigger_type, dialogue_text FROM character_dialogue WHERE character_id = ?";
 
@@ -70,7 +70,7 @@ public class DialogueDAO {
                 );
                 dialogues.add(entry);
             }
-            System.out.println("[DEBUG_LOG] DialogueDAO: Found " + dialogues.size() + " records in DB.");
+            System.out.println("[SYSTEM_LOG] DialogueDAO: Found " + dialogues.size() + " records in DB.");
         } catch (SQLException e) {
             System.out.println("❌ Error fetching dialogues: " + e.getMessage());
             e.printStackTrace();

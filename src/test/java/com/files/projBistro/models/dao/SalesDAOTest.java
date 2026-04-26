@@ -9,10 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for SalesDAO using an in‑memory SQLite database.
- * No real database file is touched.
- */
+// using in-memory database so tests don't mess up the real bistroTrue.db
 class SalesDAOTest {
 
     private SalesDAO salesDAO;
@@ -244,6 +241,67 @@ class SalesDAOTest {
         // Orders 102 and 103 (cancelled also included)
         assertEquals(2, orders.size());
     }
+
+    // Add these methods to your existing SalesDAOTest.java
+
+    @Test
+    void testGetSalesSummary_ExcludesCancelledOrders() {
+        // The cancelled order (103) should NOT be included
+        SalesDAO.SalesSummary summary = salesDAO.getSalesSummary(null, null);
+
+        // Only orders 101, 102, 104 should count (3 orders)
+        assertEquals(3, summary.getTotalOrders());
+        // Total should not include order 103 (10.99)
+        assertEquals(22.99, summary.getTotalRevenue(), 0.01);
+    }
+
+    // Replace those two test methods with these:
+
+    @Test
+    void testGetPopularItems_LimitTen() {
+        // Add 15 items to test limit
+        for (int i = 0; i < 15; i++) {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    "INSERT INTO food_items (item_id, name, price, stock, item_type, character_id, is_active) VALUES (?,?,?,?,?,?,?)")) {
+                pstmt.setInt(1, 100 + i);
+                pstmt.setString(2, "Item" + i);
+                pstmt.setDouble(3, 5.00);
+                pstmt.setInt(4, 100);
+                pstmt.setString(5, "Main");
+                pstmt.setInt(6, 1);
+                pstmt.setInt(7, 1);
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                fail("Failed to insert test data: " + e.getMessage());
+            }
+        }
+
+        List<SalesDAO.PopularItem> popular = salesDAO.getPopularItems(null, null);
+        assertTrue(popular.size() <= 10);
+    }
+
+    @Test
+    void testGetRecentOrders_LimitFifty() {
+        // Add 60 orders
+        for (int i = 0; i < 60; i++) {
+            try (PreparedStatement pstmt = connection.prepareStatement(
+                    "INSERT INTO orders (order_id, user_id, total_price, status, order_date) VALUES (?,?,?,?,?)")) {
+                pstmt.setInt(1, 200 + i);
+                pstmt.setInt(2, 1);
+                pstmt.setDouble(3, 10.00);
+                pstmt.setString(4, "completed");
+                pstmt.setString(5, "2025-03-10 10:00:00");
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                fail("Failed to insert test data: " + e.getMessage());
+            }
+        }
+
+        List<Order> orders = salesDAO.getRecentOrders(null, null);
+        assertTrue(orders.size() <= 50);
+    }
+
+
 
     // ------------------------- Helper: TestSalesDAO -------------------------
     /**

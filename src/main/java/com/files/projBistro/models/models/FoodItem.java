@@ -36,7 +36,7 @@ public class FoodItem {
     // moved here so ListView shows name/price instead of gibberish
     @Override
     public String toString() {
-        return String.format("%s - £%.2f", this.name, this.price);
+        return String.format("%s - RM%.2f", this.name, this.price);
     }
 
     // 1c. getters ---------

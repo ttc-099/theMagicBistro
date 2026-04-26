@@ -7,7 +7,7 @@ import java.util.List;
 public class Order {
     private int orderId;
     private String customerName;
-    private String customerPhone;  // new field for phone number
+    private String customerPhone;
     private List<FoodItem> items;
     private double totalPrice;
     private Timestamp orderDate;
@@ -32,20 +32,27 @@ public class Order {
 
     public void calculateTotal() {
         double sum = 0;
-        for (FoodItem item : items) {
-            sum += item.getPrice();
+        if (items != null) {
+            for (FoodItem item : items) {
+                sum += item.getPrice();
+            }
         }
         this.totalPrice = sum;
     }
 
     public void addItem(FoodItem item) {
+        if (items == null) {
+            items = new ArrayList<>();
+        }
         items.add(item);
         calculateTotal();
     }
 
     public void removeItem(FoodItem item) {
-        items.remove(item);
-        calculateTotal();
+        if (items != null) {
+            items.remove(item);
+            calculateTotal();
+        }
     }
 
     // Getters and Setters
@@ -58,7 +65,12 @@ public class Order {
     public String getCustomerPhone() { return customerPhone; }
     public void setCustomerPhone(String customerPhone) { this.customerPhone = customerPhone; }
 
-    public List<FoodItem> getItems() { return items; }
+    public List<FoodItem> getItems() {
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+        return items;
+    }
 
     public double getTotalPrice() { return totalPrice; }
     public void setTotalPrice(double totalPrice) { this.totalPrice = totalPrice; }

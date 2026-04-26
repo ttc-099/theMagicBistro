@@ -5,6 +5,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.shape.Rectangle?>
 <VBox spacing="15" prefHeight="700.0" prefWidth="1024.0"
       xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
@@ -38,7 +39,7 @@
                 <columns>
                     <TableColumn fx:id="colId" text="ID" prefWidth="50" resizable="false"/>
                     <TableColumn fx:id="colName" text="Item Name" prefWidth="180"/>
-                    <TableColumn fx:id="colPrice" text="Price (£)" prefWidth="80"/>
+                    <TableColumn fx:id="colPrice" text="Price (RM)" prefWidth="80"/>
                     <TableColumn fx:id="colStock" text="Stock" prefWidth="70"/>
                     <TableColumn fx:id="colType" text="Type" prefWidth="80"/>
                     <TableColumn fx:id="colCharacter" text="Character" prefWidth="100"/>
@@ -60,50 +61,60 @@
 
             <Separator />
 
-            <VBox spacing="5" alignment="CENTER">
-                <Label text="Item Image" style="-fx-text-fill: black; -fx-font-weight: bold;"/>
-                <StackPane style="-fx-border-color: #ddd; -fx-border-width: 1; -fx-background-color: #f8f9fa;"
-                           prefHeight="150" prefWidth="150">
-                    <ImageView fx:id="imagePreview" fitHeight="140" fitWidth="140" preserveRatio="true" />
-                </StackPane>
-                <Button text="Choose Image" onAction="#handleChooseImage" />
-            </VBox>
+            <StackPane fx:id="editorStackPane">
+                <!-- The actual editor content -->
+                <VBox spacing="15">
+                    <VBox spacing="5" alignment="CENTER">
+                        <Label text="Item Image" style="-fx-text-fill: black; -fx-font-weight: bold;"/>
+                        <StackPane fx:id="imageContainer" style="-fx-border-color: #ddd; -fx-border-width: 1; -fx-background-color: #f8f9fa;"
+                                   prefHeight="150" prefWidth="150">
+                            <ImageView fx:id="imagePreview" fitHeight="140" fitWidth="140" preserveRatio="true" />
+                        </StackPane>
+                        <Button fx:id="chooseImageBtn" text="Choose Image" onAction="#handleChooseImage" />
+                    </VBox>
 
-            <Separator />
+                    <Separator />
 
-            <GridPane hgap="10" vgap="12">
-                <Label text="Item Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-text-fill: black; -fx-font-weight: bold;"/>
-                <TextField fx:id="nameInput" promptText="Item Name" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="250"/>
+                    <GridPane hgap="10" vgap="12">
+                        <Label text="Item Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-text-fill: black; -fx-font-weight: bold;"/>
+                        <TextField fx:id="nameInput" promptText="Item Name" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="250"/>
 
-                <Label text="Price (£):" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-text-fill: black; -fx-font-weight: bold;"/>
-                <TextField fx:id="priceInput" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label text="Price (RM):" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-text-fill: black; -fx-font-weight: bold;"/>
+                        <TextField fx:id="priceInput" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <Label text="Stock:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-text-fill: black; -fx-font-weight: bold;"/>
-                <TextField fx:id="stockInput" promptText="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label text="Stock:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-text-fill: black; -fx-font-weight: bold;"/>
+                        <TextField fx:id="stockInput" promptText="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                <Label text="Item Type:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-text-fill: black; -fx-font-weight: bold;"/>
-                <ComboBox fx:id="typeBox" GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="Select type" prefWidth="150" />
+                        <Label text="Item Type:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-text-fill: black; -fx-font-weight: bold;"/>
+                        <ComboBox fx:id="typeBox" GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="Select type" prefWidth="150" />
 
-                <Label text="Character:" GridPane.columnIndex="0" GridPane.rowIndex="4" style="-fx-text-fill: black; -fx-font-weight: bold;"/>
-                <ComboBox fx:id="characterBox" GridPane.columnIndex="1" GridPane.rowIndex="4" promptText="Select character" prefWidth="150" />
+                        <Label text="Character:" GridPane.columnIndex="0" GridPane.rowIndex="4" style="-fx-text-fill: black; -fx-font-weight: bold;"/>
+                        <ComboBox fx:id="characterBox" GridPane.columnIndex="1" GridPane.rowIndex="4" promptText="Select character" prefWidth="150" />
 
-                <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="5" style="-fx-text-fill: black; -fx-font-weight: bold;"/>
-                <TextArea fx:id="descriptionInput" promptText="Description..." GridPane.columnIndex="1" GridPane.rowIndex="5"
-                          prefHeight="60" wrapText="true" />
-            </GridPane>
+                        <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="5" style="-fx-text-fill: black; -fx-font-weight: bold;"/>
+                        <TextArea fx:id="descriptionInput" promptText="Description..." GridPane.columnIndex="1" GridPane.rowIndex="5"
+                                  prefHeight="60" wrapText="true" />
+                    </GridPane>
 
-            <Separator />
+                    <Separator />
 
-            <HBox spacing="10" alignment="CENTER">
-                <Button text="Add New" onAction="#handleAddItem" prefWidth="120"/>
-                <Button text="Update" onAction="#handleEditItem" prefWidth="120"/>
-                <Button text="Delete" onAction="#handleRemoveItem" prefWidth="120"/>
-                <Button text="Clear" onAction="#clearForm" prefWidth="120"/>
-            </HBox>
+                    <HBox spacing="10" alignment="CENTER">
+                        <Button fx:id="addBtn" text="Add New" onAction="#handleAddItem" prefWidth="120"/>
+                        <Button fx:id="updateBtn" text="Update" onAction="#handleEditItem" prefWidth="120"/>
+                        <Button fx:id="deleteBtn" text="Delete" onAction="#handleRemoveItem" prefWidth="120"/>
+                        <Button fx:id="clearBtn" text="Clear" onAction="#clearForm" prefWidth="120"/>
+                    </HBox>
 
-            <HBox spacing="10" alignment="CENTER">
-                <Button text="Back to Dashboard" onAction="#handleBack" prefWidth="200"/>
-            </HBox>
+                    <HBox spacing="10" alignment="CENTER">
+                        <Button fx:id="backBtn" text="Back to Dashboard" onAction="#handleBack" prefWidth="200"/>
+                    </HBox>
+                </VBox>
+
+            </StackPane>
+
+            <Label fx:id="selectionHint" text="Select an item from the table to edit"
+                   style="-fx-text-fill: #f39c12; -fx-font-size: 11px; -fx-font-style: italic;"
+                   alignment="CENTER" maxWidth="Infinity" visible="false"/>
         </VBox>
     </SplitPane>
 </VBox>

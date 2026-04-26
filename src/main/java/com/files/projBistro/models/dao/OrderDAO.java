@@ -45,7 +45,7 @@ public class OrderDAO {
 
                 orders.add(order);
             }
-            System.out.println("DEBUG: found " + rowCount + " orders in database");
+            System.out.println("SYSTEM: found " + rowCount + " orders in database");
 
         } catch (SQLException e) {
             System.out.println("SQL ERROR in getActiveOrders: " + e.getMessage());
@@ -221,5 +221,77 @@ public class OrderDAO {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    public List<Order> getOrdersByUserId(int userId, String username) {
+        List<Order> orders = new ArrayList<>();
+        String sql = "SELECT order_id, total_price, status, order_date FROM orders WHERE user_id = ? ORDER BY order_date DESC";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Order order = new Order(rs.getInt("order_id"), username);
+                order.setTotalPrice(rs.getDouble("total_price"));
+                order.setStatus(rs.getString("status"));
+                order.setOrderDate(rs.getTimestamp("order_date"));
+                orders.add(order);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
+
+    public List<FoodItem> getOrderItems(int orderId) {
+        List<FoodItem> items = new ArrayList<>();
+        String sql = "SELECT f.item_id, f.name, f.price, f.image_path, f.item_type, oi.price_at_purchase, oi.quantity " +
+                "FROM order_items oi " +
+                "JOIN food_items f ON oi.item_id = f.item_id " +
+                "WHERE oi.order_id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, orderId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                FoodItem item = new FoodItem.FoodItemBuilder()
+                        .setId(rs.getInt("item_id"))
+                        .setName(rs.getString("name"))
+                        .setPrice(rs.getDouble("price"))  // Use current price from food_items
+                        .setImagePath(rs.getString("image_path"))  // ✅ ADD THIS
+                        .setItemType(rs.getString("item_type"))
+                        .build();
+                items.add(item);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return items;
+    }
+
+    public List<Order> getCompletedOrdersByUserId(int userId, String username) {
+        List<Order> orders = new ArrayList<>();
+        String sql = "SELECT order_id, total_price, status, order_date FROM orders WHERE user_id = ? AND status = 'completed' ORDER BY order_date DESC";
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Order order = new Order(rs.getInt("order_id"), username);
+                order.setTotalPrice(rs.getDouble("total_price"));
+                order.setStatus(rs.getString("status"));
+                order.setOrderDate(rs.getTimestamp("order_date"));
+                orders.add(order);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
     }
 }

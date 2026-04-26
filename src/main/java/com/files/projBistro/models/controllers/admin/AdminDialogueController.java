@@ -11,20 +11,21 @@ import java.util.function.Consumer;
 
 public class AdminDialogueController {
 
-    private ComboBox<String> dialogueCharBox;
-    private TableView<DialogueDAO.DialogueEntry> dialogueTable;
+    // ui elements from fxml
+    private ComboBox<String> dialogueCharBox;  // select which character
+    private TableView<DialogueDAO.DialogueEntry> dialogueTable;  // shows all dialogue lines
     private TableColumn<DialogueDAO.DialogueEntry, Integer> colDialogueId;
     private TableColumn<DialogueDAO.DialogueEntry, String> colTrigger;
     private TableColumn<DialogueDAO.DialogueEntry, String> colText;
-    private ComboBox<String> triggerInputBox;
-    private TextArea dialogueInputArea;
-    private ComboBox<String> editTriggerBox;
-    private TextArea editDialogueArea;
+    private ComboBox<String> triggerInputBox;  // for adding new dialogue
+    private TextArea dialogueInputArea;  // text for new dialogue
+    private ComboBox<String> editTriggerBox;  // for editing existing dialogue
+    private TextArea editDialogueArea;  // text for editing
 
     private AdminDAO adminDAO;
     private DialogueDAO dialogueDAO;
-    private BooleanSupplier isAuthorized;
-    private Consumer<String> showStatus;
+    private BooleanSupplier isAuthorized;  // checks if admin pin was entered
+    private Consumer<String> showStatus;  // shows temporary status messages
 
     public void init(AdminDAO adminDAO, DialogueDAO dialogueDAO, Label statusLabel,
                      Consumer<String> showStatus, BooleanSupplier isAuthorized) {
@@ -34,6 +35,7 @@ public class AdminDialogueController {
         this.isAuthorized = isAuthorized;
     }
 
+    // connects all the ui elements after fxml loads
     public void setUIElements(ComboBox<String> dialogueCharBox,
                               TableView<DialogueDAO.DialogueEntry> dialogueTable,
                               TableColumn<DialogueDAO.DialogueEntry, Integer> colDialogueId,
@@ -59,12 +61,14 @@ public class AdminDialogueController {
         setupDropdowns();
     }
 
+    // tell table columns which data to show from DialogueEntry objects
     private void setupTableColumns() {
         colDialogueId.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
         colTrigger.setCellValueFactory(cellData -> cellData.getValue().triggerTypeProperty());
         colText.setCellValueFactory(cellData -> cellData.getValue().textProperty());
     }
 
+    // when admin selects a different character, reload the table
     private void setupCharacterSelectionListener() {
         dialogueCharBox.getSelectionModel().selectedItemProperty().addListener((obs, old, character) -> {
             if (character != null) {
@@ -75,6 +79,7 @@ public class AdminDialogueController {
         });
     }
 
+    // when admin clicks a row in the table, load it into edit form
     private void setupTableSelectionListener() {
         dialogueTable.getSelectionModel().selectedItemProperty().addListener((obs, old, newItem) -> {
             if (newItem != null) {
@@ -85,6 +90,7 @@ public class AdminDialogueController {
         });
     }
 
+    // fill the dropdown boxes with options
     private void setupDropdowns() {
         ObservableList<String> characters = FXCollections.observableArrayList("Chloe", "Mimi", "Metsu", "Laniard");
         dialogueCharBox.setItems(characters);
@@ -97,6 +103,7 @@ public class AdminDialogueController {
         editTriggerBox.setItems(triggerOptions);
     }
 
+    // add a new dialogue line to database
     public void handleAddDialogue() {
         if (!isAuthorized.getAsBoolean()) return;
         int charId = dialogueCharBox.getSelectionModel().getSelectedIndex() + 1;
@@ -115,6 +122,7 @@ public class AdminDialogueController {
         }
     }
 
+    // update existing dialogue line
     public void handleUpdateDialogue() {
         if (!isAuthorized.getAsBoolean()) return;
         DialogueDAO.DialogueEntry selected = dialogueTable.getSelectionModel().getSelectedItem();
@@ -137,6 +145,7 @@ public class AdminDialogueController {
         }
     }
 
+    // permanently delete a dialogue line
     public void handleDeleteDialogue() {
         if (!isAuthorized.getAsBoolean()) return;
         DialogueDAO.DialogueEntry selected = dialogueTable.getSelectionModel().getSelectedItem();
@@ -159,6 +168,7 @@ public class AdminDialogueController {
         }
     }
 
+    // clear the edit form and table selection
     public void clearDialogueSelection() {
         dialogueTable.getSelectionModel().clearSelection();
         editTriggerBox.getSelectionModel().clearSelection();
@@ -166,11 +176,13 @@ public class AdminDialogueController {
         showStatus.accept("Selection cleared.");
     }
 
+    // clear the add new dialogue form
     private void clearAddDialogueForm() {
         triggerInputBox.getSelectionModel().clearSelection();
         dialogueInputArea.clear();
     }
 
+    // reload the dialogue table for current character
     public void refreshTable() {
         int charId = dialogueCharBox.getSelectionModel().getSelectedIndex() + 1;
         if (charId > 0 && charId <= 4) {

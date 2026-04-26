@@ -5,6 +5,7 @@ import com.files.projBistro.models.userModel.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -18,9 +19,14 @@ public class SettingsController {
     @FXML private ToggleButton themeToggle;
 
     private User loggedInUser;
+    private MenuController menuController;  // Reference to parent MenuController
 
     public void setLoggedInUser(User user) {
         this.loggedInUser = user;
+    }
+
+    public void setMenuController(MenuController controller) {
+        this.menuController = controller;
     }
 
     @FXML
@@ -38,6 +44,8 @@ public class SettingsController {
 
     @FXML
     private void handleThemeChange() {
+        SoundHelper.playTapSound();
+
         String newTheme;
         if (themeToggle.isSelected()) {
             newTheme = "/styles/dark.css";
@@ -49,7 +57,16 @@ public class SettingsController {
         ThemeManager.setTheme(newTheme);
         applyThemeToCurrentScene();
 
+        // Refresh the menu controller if it exists
+        if (menuController != null) {
+            menuController.refreshTheme();
+        }
 
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Theme Changed");
+        alert.setHeaderText(null);
+        alert.setContentText("Theme has been changed.");
+        alert.showAndWait();
     }
 
     private void applyThemeToCurrentScene() {
@@ -60,33 +77,25 @@ public class SettingsController {
     }
 
     @FXML
-    private void handleBack(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/menuView.fxml"));
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(loader.load(), 1024, 700);
-        MenuController menuController = loader.getController();
-        menuController.setLoggedInUser(loggedInUser);
-        String theme = ThemeManager.getTheme();
-        if (theme != null) {
-            scene.getStylesheets().add(getClass().getResource(theme).toExternalForm());
+    public void handleBackToMenu() {
+        SoundHelper.playTapSound();
+
+        if (menuController != null) {
+            menuController.refreshTheme();  // Ensure theme is applied
+            menuController.showMenuView();
         }
-        stage.setScene(scene);
-        stage.setTitle("Camo-Gear Bistro | Menu");
-        stage.show();
     }
 
     @FXML
     private void handleBackToLogin(ActionEvent event) throws IOException {
-        // Optional: reset theme on logout? Actually handled in MenuController logout.
+
+        SoundHelper.playTapSound();
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/loginView.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(loader.load(), 400, 500);
-        String theme = ThemeManager.getTheme();
-        if (theme != null) {
-            scene.getStylesheets().add(getClass().getResource(theme).toExternalForm());
-        }
         stage.setScene(scene);
-        stage.setTitle("Camo-Gear Bistro | Login");
+        stage.setTitle("Camo-Gear Bistro (Login)");
         stage.show();
     }
 }

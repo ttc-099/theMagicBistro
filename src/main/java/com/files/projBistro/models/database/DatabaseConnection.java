@@ -13,7 +13,7 @@ public class DatabaseConnection {
         try {
             connection = DriverManager.getConnection(URL);
         } catch (SQLException e) {
-            System.out.println("❌ Database connection failed: " + e.getMessage());
+            System.out.println("Database connection failed: " + e.getMessage());
         }
     }
 

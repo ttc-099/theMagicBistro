@@ -18,29 +18,24 @@ public class ThemeManager {
         currentTheme = DEFAULT_THEME;
     }
 
-    // ⭐ THE MAGIC HAPPENS HERE - ONE METHOD TO RULE THEM ALL ⭐
     public static void applyToScene(Scene scene, Class<?> controllerClass) {
         if (scene == null) return;
 
-        // Remove ALL custom themes (light.css and dark.css)
+        System.out.println("Applying theme to scene: " + currentTheme);
+
+        // Remove old themes
         scene.getStylesheets().removeIf(sheet ->
                 sheet.contains("light.css") || sheet.contains("dark.css")
         );
 
-        // Add ONLY the current theme
+        // Add current theme
         if (currentTheme != null) {
             try {
                 String themeCss = controllerClass.getResource(currentTheme).toExternalForm();
                 scene.getStylesheets().add(themeCss);
+                System.out.println("Added CSS: " + themeCss);
             } catch (Exception e) {
-                System.err.println("Could not load theme: " + currentTheme);
-                // Fallback to light.css if error
-                try {
-                    String fallback = controllerClass.getResource(DEFAULT_THEME).toExternalForm();
-                    scene.getStylesheets().add(fallback);
-                } catch (Exception ex) {
-                    System.err.println("Could not load fallback theme either!");
-                }
+                e.printStackTrace();
             }
         }
     }
